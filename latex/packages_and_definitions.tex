@@ -1,0 +1,44 @@
+% packages
+%\usepackage[utf8]{vietnam}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{color, graphicx, cases}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	filecolor=black,      
+	urlcolor=black,
+}
+\usepackage{array, multirow, booktabs}
+\usepackage{caption, subcaption}
+\usepackage{ragged2e} % using justifying
+\numberwithin{equation}{section}
+\everymath{\displaystyle}
+\usepackage{titling}
+
+\usepackage[a4paper,left=35mm,top=31mm,right=20mm,bottom=30mm]{geometry}
+\renewcommand{\baselinestretch}{1.5}
+
+% new definitions
+\newtheorem{dl}{Theorem}[section]
+\newtheorem{md}{Proposition}[section]
+\newtheorem{hq}{Corollary}[section]
+\newtheorem{cy}{Remark}[section]
+
+\theoremstyle{definition}
+\newtheorem{dn}{Definition}[section]
+\newtheorem{vd}{Example}[section]
+\newtheorem{bt}{Problem}[section]
+\newtheorem{nx}{Comment}[section]
+
+% reference
+\usepackage{cleveref}
+\crefname{dl}{\textbf{Theorem}}{}
+\crefname{md}{\textbf{Proposition}}{}
+\crefname{hq}{\textbf{Corollary}}{}
+
+\crefname{dn}{\textbf{Definition}}{}
+\crefname{vd}{\textbf{Example}}{}
+\crefname{cy}{\textbf{Remark}}{}
+\crefname{bt}{\textbf{Problems}}{}
+\crefname{nx}{\textbf{Comment}}{}

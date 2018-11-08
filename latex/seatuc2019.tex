@@ -1,0 +1,435 @@
+\documentclass[]{article}
+\input{packages_and_definitions}
+\everymath{\displaystyle}
+\title{...}
+
+%\author{
+%Dinh Nho Hao\thanks{email: hao@math.ac.vn}
+%\and Ta Thi Thanh Mai\thanks{email: mai.tathithanh@hust.edu.vn} 
+%\and Ho Duc Nhan\thanks{email: hdnhan28@gmail.com}}
+%\thanksmarkseries{arabic}
+%\date{\footnotesize\textit{Hanoi Institute of Mathematics, VAST, 18 Hoang Quoc Viet Road, Hanoi, Vietnam\\
+%School of Applied Mathematics and Informatics, Hanoi University of Science and Technology, 1 Dai Co Viet street, Hai Ba Trung District, Hanoi, Vietnam}}
+
+\begin{document}
+\justifying
+\maketitle
+%\thispagestyle{empty}
+%\normalsize
+\begin{abstract}
+...
+\end{abstract}
+
+\textbf{Keywords:} Inverse source problems, least squares method, Tikhonov regularization, space-time finite element method, conjugate gradient method.
+
+\section{Introduction and Problem setting}
+There is a lot of physical phenomena in nature such as [...] . Especially, heat transfer  is, in mathematics, described by parabolic equation with its right hand side is the source heat. To be more detailed, let $\Omega \subset \mathbb{R}^d,\, d\in \mathbb{N^+}$ be a bounded domain with a boundary $\Gamma$ and endow the cylinder $Q=\Omega\times (0,\, T]$ and lateral surface area $S=\Gamma \times (0,\, T]$ where $T>0$. 
+\\
+Consider the heat equation:
+\begin{align}\label{1.1}
+	\frac{\partial u(x, t)}{\partial t}-\sum_{i, j=1}^{d}\frac{\partial}{\partial x_i}\left(a_{ji}(x, t)\frac{\partial u(x, t)}{\partial x_j}\right)+a_0(x, t)u(x, t)=F(x, t), \quad(x, t)\in Q,
+\end{align}
+with the initial and Dirichlet conditions, respectively
+\begin{align}
+	u(x, 0)&=u_0(x),\quad\quad x\in \Omega,\label{1.2}\\
+	u(x, t)&=u_D(x, t),\quad(x, t)\in S, \label{1.3}
+\end{align}
+where
+\begin{align*}
+	&a_{ji}\in L^{\infty}(Q),\, a_{ij}=a_{ji},\; \forall i, j\in \{1, 2, ..., d\},\\
+	&\lambda_1\left\|\xi\right\|^2\leq \sum_{i, j=1}^{d}a_{ij}\xi_i\xi_j\leq \lambda_2\left\|\xi\right\|^2,\; \forall \xi\in\mathbb{R}^d,\\
+	&a_0\in L^{\infty}(Q),\; 0\leq a_0(x, t)\leq \mu_1,\; (x, t)\in Q\\ 
+	&u_0\in L^2(\Omega),\;u_D\in L^2(S),
+\end{align*}
+with $\lambda_1$ and $\lambda_2$ are positive constants and $\mu_1\geq 0$.
+\\
+The direct problem is to determine $u$ when all data $a_{ji}, i, j=\overline{1, d}, \, a_0,\,u_0,\,u_D$ and $F$ in \cref{1.1,1.2,1.3} are given. On the other hand, the inverse problem is to identify a missed data such as the right hand side $F$ when some additional observations on the solution $u$ are available. 
+\\
+We consider the right hand side of the equation \eqref{1.1} following the form $F(x, t)=f(x, t)q(x, t)+g(x, t)$, where $q(x, t),\, g(x, t)$ are given. Find $f(x, t)$ if $\omega(x, t)=u(x, t)$ is given on $Q$. So, to solve this problem, we need to minimize the least square functional \cite{a14, a15}
+%$$J_{\gamma}(f)=\frac{1}{2}\sum_{k=1}^{N_{m}}\left\| u(f)-\omega\right\|_{L^2(Q)}^2.$$
+$$J_{\gamma}(f)=\frac{1}{2}\left\|u(f)-\omega\right\|_{L^2(Q)}^2.$$
+However, this minimization problem is unstable and there might be many minimizers to it. Therefore, we minimize the Tikhonov functional instead
+$$J_{\gamma}(f)=\frac{1}{2}\left\|u(f)-\omega\right\|_{L^2(Q)}^2+\frac{\gamma}{2}\left\|f-f^*\right\|_{L^2(Q)}^2,$$
+with $\gamma>0$ being a regularization parameter, $f^*$ is an a prior estimation of $f$.% and $\left\|.\right\|_*$ an appropriate norm.
+
+\section{Variational problem}\label{section2}
+To introduce the concept of weak form, we use the standard Sobolev spaces $H^1(\Omega),\, H^1_0(\Omega),\, H^{1, 0}(Q)$ and $H^{1, 1}(Q)$ \cite{b1, b2, b3}. Further, for a Banach space $B$, we define
+$$L^2(0, T; B)=\left\{u:u(t)\in B \text{ a.e } t\in (0, T) \text{ and } \left\|u\right\|_{L^2(0, T;\; B)} <\infty \right\},$$
+with the norm
+$$\left\|u\right\|_{L^2(0, T; B)}^2=\int_0^T\left\|u(t)\right\|^2_Bdt.$$
+In the sequel, we shall use the space $W(0, T)$ define as
+$$W(0, T)=\left\{u: u\in L^2(0, T; H^1_0(\Omega)), u_t\in L^2\left(0, T; H^{-1}(\Omega) \right)\right\}$$
+The solution of  \cref{1.1,1.2,1.3} is understood in the weak sense as follows: Suppose that $F\in L^2(Q)$ and a week solution in $W(0, T)$ of the problem \cref{1.1,1.2,1.3} is a function $u(x, t)\in W(0, T)$ satisfying the identity
+\begin{align}\label{2.1}
+	\int_{Q}\left[\frac{\partial u}{\partial t}v+\sum_{i, j=1}^{d}a_{ji}\frac{\partial u}{\partial x_i}\frac{\partial v}{\partial x_j}+a_0uv\right]dx=\int_{Q}Fvdx,\;\forall v \in L^2\left(0, T; H^1(\Omega)\right).
+\end{align}
+and 
+\begin{align}\label{2.2}
+	u(x, 0)=u_0,\; x\in \Omega.
+\end{align}
+Following [...], we can prove that there exists a unique solution $u\in W(0, T)$ of the problem \cref{1.1,1.2,1.3}. Furthermore, there is a positive $c_d$ independent of $a_{ij},\, a_0, \,u_0, u_D$ and $F$ that satisfies 
+\begin{align}\label{2.3}
+	\left\|u\right\|_{W(0, T)} \leq c_d \left(\left\|F\right\|_{L^2\left(\Omega\right)}+\left\|u_0\right\|_{L^2(\Omega)}+\left\|u_D\right\|_{L^2(S)}\right).
+\end{align}
+We have the form $F(x, t)=f(x, t)q(x, t)+g(x, t)$ with $f\in L^2(Q),\, q\in L^\infty(Q)$ and $g\in L^2(Q)$ and hope to recover $f(x, t)$ from the observation $\omega(x, t)$. Since the solution $u(x, t)$ depends on the function $f(x, t)$, so we denote it by $u(x, t, f)$ or $u(f)$. Identify $f(x, t)$ satisfying 
+$$u(f)=\omega(x, t).$$
+We need to minimize the Tikhonov functional
+\begin{align}\label{2.4}
+	J_{\gamma}(f)=\frac{1}{2}\left\|u(f)-\omega\right\|_{L^2(Q)}^2+\frac{\gamma}{2}\left\|f-f^*\right\|_{L^2(Q)}^2.
+\end{align}
+We will prove that $J_\gamma$ is Frechet differentiable and drive a formula for its gradient. In doing so, we need the adjoint problem
+\begin{align}\label{2.5} 
+	\begin{cases}
+		-\frac{\partial p}{\partial t}-\sum_{i, j=1}^{d}\frac{\partial}{\partial x_j}\left(a_{ji}(x, t)\frac{\partial p}{\partial x_i}\right)+a_0p=u(f)-\omega, & (x, t)\in Q,\\
+		u(x, t)=0, & (x, t)\in S\\
+		p(x, T)=0, & x\in \Omega.
+	\end{cases}
+\end{align}
+By changing the time direction, meaning $\tilde{p}(x, t)=p(x, T-t)$, we will get a Dirichlet problem for parabolic equations.
+\begin{dl}
+	The functional $J_\gamma$ is Frechet differentiable and its gradient $\nabla J_\gamma$ at $f$ has the form 
+	\begin{align}\label{2.6}
+		\nabla J_\gamma(f)=q(x, t)p(x, t)+\gamma \left(f(x, t)-f^*(x, t)\right)
+	\end{align}
+\end{dl}
+\begin{proof}
+	By taking a small variation $\delta f \in L^2(Q)$ of $f$ and denoting $\delta u(f)=u(f+\delta f)-u(f)$, we have
+	\begin{align*}
+		J_0(f+\delta f)-J_0(f)&=\frac{1}{2}\left\| u(f+\delta f)-\omega\right\|^2_{L^2(Q)}-\frac{1}{2}\left\| u(f)-\omega\right\|^2_{L^2(Q)}\\
+		&=\frac{1}{2}\left\| \delta u(f) + u(f)-\omega\right\|^2_{L^2(Q)}-\frac{1}{2}\left\| u(f)-\omega\right\|^2_{L^2(Q)}\\
+		&=\frac{1}{2}\left\| \delta u(f)\right\|^2_{L^2(Q)}+\left\langle  \delta u(f),  u(f)-\omega\right\rangle_{L^2(Q)},
+	\end{align*}
+	where $\delta u(f)$ is the solution to this problem
+	\begin{align}\label{2.7}
+		\begin{cases}
+			\frac{\partial \delta u}{\partial t}-\sum\limits_{i, j=1}^{d}\frac{\partial}{\partial x_j}\left(a_{ji}(x, t)\frac{\partial \delta u}{\partial x_i}\right)+a_0\delta u=q(x, t)\delta f,&(x, t)\in Q,\\
+			\delta u(x, t)=0, & (x, t)\in S,\\
+			\delta u(x, 0)=0, &x\in \Omega.
+		\end{cases}
+	\end{align}
+	Because the priori estimate \eqref{2.3} for the direct problem, we have
+	\begin{align}\label{2.8}
+		\left\|\delta u(f)\right\|_{L^2(Q)}^2=o\left(\left\|\delta f\right\|_{L^2(Q)}\right)\, \text{when } \left\|\delta f\right\|_{L^2(Q)}\to 0.
+	\end{align}
+	What is more, applying the Green formula for \eqref{2.5} and \eqref{2.7}, we get
+	\begin{align}\label{2.9}
+		\int_{Q} \delta u(x, t) \left( u(f)-\omega(t)\right)dxdt=\int_{Q} p(x, t)q(x, t)\delta f(x, t)dxdt.
+	\end{align}
+	According to \eqref{2.8} and \eqref{2.9}, we obtain
+	\begin{align*}
+		J_0(f+\delta f)-J_0(f)&=\int_{Q}\delta u(x, t)\left( u(f)-\omega(t)\right)dxdt+o\left(\left\|\delta f\right\|_{L^2(Q)}\right)\notag\\
+		&=\int_Q q(x, t)p(x, t)\delta f(x, t)dxdt+o\left(\left\|\delta f\right\|_{L^2(Q)}\right)\notag\\
+		&=\left\langle qp,\delta f \right\rangle_{L^2(Q)}+o\left(\left\|\delta f\right\|^2_{L(Q)}\right).
+	\end{align*}
+	Therefore, we will obtain
+	$$J_\gamma(f+\delta f)-J_\gamma(f)=\left\langle qp,\delta f \right\rangle_{L^2(Q)}+\gamma\left\langle f-f^*,\delta f \right\rangle_{L^2(Q)}+o\left(\left\|\delta f\right\|^2_{L(Q)}\right).$$
+	Hence the functional $J_\gamma$ is Frechet differentiable and its gradient $\nabla J_\gamma$ at $f$ has the form \eqref{2.6}. The theorem is proved.
+\end{proof}
+%\begin{cy}
+%	In this theorem, we write the Tikhonov functional for $F(x, t)=f(x, t)q(x, t)+g(x, t)$. But when F has another form, the penalty term should be modified
+%	\begin{itemize}
+%		\item $F(x, t)=f(x)q(x, t)+g(x, t)$: the penalty functional is $\left\|f-f^*\right\|_{L^2(\Omega)}$ and $$\nabla J_0(f)=\int_0^Tq(x, t)p(x, t)dt.$$
+%		\item $F(x, t)=f(t)q(x, t)+g(x, t)$: the penalty functional is $\left\|f-f^*\right\|_{L^2(Q)}$ and $$\nabla J_0(f)=\int_\Omega q(x, t)p(x, t)dt.$$
+%	\end{itemize}
+%\end{cy}
+
+\section{Conjugate gradient method}\label{section3}
+\noindent To find $f$ satisfied \eqref{2.4}, we use the conjugate gradient method (CG). Its iteration follows, we assume that at the $k$th iteration, we have $f^k$ and then the next iteration will be
+$$f^{k+1}=f^k+\alpha_kd^k,$$
+with
+\begin{align*}
+	d^k&=\left\{\begin{array}{ll}
+	-\nabla J_\gamma(f^k),& k=0,\\
+	-\nabla J_\gamma(f^k)+\beta_kd^{k-1},& k>0,
+	\end{array}\right.\\\\
+	\beta_k&=\frac{\left\|\nabla J_\gamma (f^k)\right\|^2_{L^2(Q)}}{\left\|\nabla J_\gamma (f^{k-1})\right\|^2_{L^2(Q)}},
+\end{align*}
+and
+$$\alpha_k=\operatorname*{arg\,min}_{\alpha\geq 0}J_\gamma(f^k+\alpha d^k).$$
+To identify $\alpha_k$, we consider two problems
+\begin{bt}\label{bt2.1}
+	Denote the solution of this problem is $u[f]$
+	\begin{align*}
+		\begin{cases}
+			\frac{\partial u}{\partial t}-\sum_{i, j=1}^{d}\frac{\partial}{\partial x_j}\left(a_{ji}(x, t)\frac{\partial u}{\partial x_i}\right)+a_0(x, t)u=f(x, t)q(x, t),&(x, t)\in Q,\\
+			u(x, t)=0, & (x, t)\in S,\\
+			u(x, 0)=0,&x\in \Omega.
+		\end{cases}
+	\end{align*}
+\end{bt}
+\begin{bt}\label{bt2.2}
+	Denote the solution of this problem is $u(u_0, u_D)$
+	\begin{align*}
+		\begin{cases}
+			\frac{\partial u}{\partial t}-\sum_{i, j=1}^{d}\frac{\partial}{\partial x_j}\left(a_{ji}(x, t)\frac{\partial u}{\partial x_i}\right)+a_0(x, t)u=g(x, t),&(x, t)\in Q,\\
+			u(x, t)=u_D(x, t), & (x, t)\in S,\\
+			u(x, 0)=u_0(x),&x\in \Omega.
+		\end{cases}
+	\end{align*}
+\end{bt}
+\noindent If we do so, the observation operators have the form $u(f)= u[f]+ u(u_0, u_D)=Af+ u(u_0, u_D)$, with $A$ being bounded linear operator from $L^2(Q)$ to $L^2(Q)$.\\
+We have
+\begin{align*}
+	J_{\gamma}(f^k+\alpha d^k)&=\frac{1}{2}\left\| u(f^k+\alpha d^k)-\omega\right\|_{L^2(Q)}^2+\frac{\gamma}{2}\left\|f^k+\alpha d^k-f^*\right\|_{L^2(Q)}^2\\[0.2cm]
+	&=\frac{1}{2}\left\|\alpha Ad^k+Af^k+ u(u_0, u_D)-\omega\right\|_{L^2(Q)}^2+\frac{\gamma}{2}\left\|f^k+\alpha d^k-f^*\right\|_{L^2(Q)}^2\\[0.2cm]
+	&=\frac{1}{2}\left\|\alpha Ad^k+ u(f^k)-\omega\right\|_{L^2(Q)}^2+\frac{\gamma}{2}\left\|f^k+\alpha d^k-f^*\right\|_{L^2(Q)}^2.
+\end{align*}
+Differentiating $J_\gamma(f^k+\alpha d^k)$ with respect to $\alpha$, we get
+\begin{align*}
+	\frac{\partial J_\gamma(f^k+\alpha d^k)}{\partial \alpha} &= \alpha\left\|Ad^k \right\|_{L^2(Q)}^2+\left\langle Ad^k, u(f^k)-\omega\right\rangle_{L^2(Q)}\\[0.2cm]
+	&\quad+\gamma\alpha\left\| d^k\right\|_{L^2(Q)}^2+\gamma\left\langle d^k, f^k-f^*\right\rangle_{L^2(Q)}.
+\end{align*}
+Putting $\frac{\partial J_\gamma(f^k+\alpha d^k)}{\partial \alpha}=0$, we obtain
+\begin{align*}
+	\alpha_k&=-\frac{\displaystyle\left\langle Ad^k,  u(f^k)-\omega\right\rangle_{L^2(Q)}+\gamma\left\langle d^k, f^k-f^*\right\rangle_{L^2(Q)}}{\displaystyle\left\|Ad^k\right\|^2_{L^2(Q)}+\gamma\left\|d^k\right\|^2_{L^2(Q)}}\\[0.2cm]
+	&=-\frac{\displaystyle\left\langle d^k, A^*\left( u(f^k)-\omega\right)\right\rangle_{L^2(Q)}+\gamma\left\langle d^k, f^k-f^*\right\rangle_{L^2(Q)}}{\displaystyle\left\|Ad^k\right\|^2_{L^2(Q)}+\gamma\left\|d^k\right\|^2_{L^2(Q)}}\\[0.2cm]
+	&=-\frac{\displaystyle\left\langle d^k, A^*\left( u(f^k)-\omega\right)+\gamma(f^k-f^*)\right\rangle_{L^2(Q)}}{\displaystyle\left\|Ad^k\right\|^2_{L^2(Q)}+\gamma\left\|d^k\right\|^2_{L^2(Q)}}\\[0.2cm]
+	&=-\frac{\left\langle d^k,\nabla J_\gamma(f^k)\right\rangle_{L^2(Q)}}{\displaystyle\left\|Ad^k\right\|^2_{L^2(Q)}+\gamma\left\|d^k\right\|^2_{L^2(Q)}}.
+\end{align*}
+Because of $d^k=r^k+\beta_kd^{k-1},\, r^k=-\nabla J_\gamma (f^k)$ and $\left\langle r^k,d^{k-1}\right\rangle_{L^2(Q)}=0$, we get 
+$$\alpha_k=\frac{\left\|r^k\right\|^2_{L^2(Q)}}{\displaystyle\left\|Ad^k\right\|^2_{L^2(Q)}+\gamma\left\|d^k\right\|^2_{L^2(Q)}}.$$
+Thus, the CG algorithm is set up by following loop:
+
+\noindent \textbf{CG algorithm}
+\begin{itemize}
+	\item[1.] Set $k=0$, initiate $f^0$.
+	\item[2.] For $k=0, 1, 2,...$. Calculate
+	$$r^k=-\nabla J_\gamma(f^k).$$
+	Update\\
+	\begin{align*}
+		d^k&=\left\{\begin{array}{ll}
+		r^k,& k=0,\\
+		r^k+\beta_kd^{k-1},& k>0,
+		\end{array}\right.\\\\
+		\beta_k&=\frac{\left\|r^k\right\|^2_{L^2(Q)}}{\left\|r^{k-1}\right\|^2_{L^2(Q)}}.
+	\end{align*}
+	\item[3.] Calculate
+	$$\alpha_k=\frac{\left\|r^k\right\|^2_{L^2(Q)}}{\displaystyle\left\|Ad^k\right\|^2_{L^2(Q)}+\gamma\left\|d^k\right\|^2_{L^2(Q)}}.$$
+	Update
+	$$f^{k+1}=f^{k}+\alpha_kd^k.$$
+\end{itemize}
+
+\section{Finite element discretization}\label{section4}
+We rewrite the Tikhonov functional
+\begin{align*}
+	J_\gamma(f)&=\frac{1}{2}\left\| u[f]+ u(u_0, u_D)-\omega\right\|^2_{L^2(Q)}+\frac{\gamma}{2}\left\|f-f^*\right\|^2_{L^2(Q)}\\
+	&=\frac{1}{2}\left\|Af+ u(u_0, u_D)-\omega\right\|^2_{L^2(Q)}+\frac{\gamma}{2}\left\|f-f^*\right\|^2_{L^2(Q)}\\
+	&=\frac{1}{2}\left\|Af-\hat{\omega}\right\|^2_{L^2(Q)}+\frac{\gamma}{2}\left\|f-f^*\right\|^2_{L^2(Q)},
+\end{align*}
+with $\hat{\omega}=\omega- u(u_0, u_D)$.
+\\
+The solution $f^\gamma$ of the minimization problem \eqref{2.4} is characterized by the first-order optimality condition
+\begin{align}\label{3.1}
+	\nabla J_\gamma(f^\gamma)= A^*(Af^\gamma-\hat{\omega})+\gamma(f^\gamma-f^*)=0,
+\end{align}
+with $A^*: L^2(Q)\to L^2(Q)$ is the adjoint operator of $A$ defined by $A^*\left( u(f) - \omega\right) = p$ where $p$ is the solution of the adjoint problem \eqref{2.5}. 
+\\
+We will approximate \eqref{3.1} by finite element method. In fact, we will approximate $A$ and $A^*$ as follows.
+
+\subsection{Approximation of $A,\, A^*$}
+We present a fully discrete finite element approximation for the variational problem above. We discrete $\Omega$ into finite elements with mesh $T_h$ and define the piecewise linear finite element space $V_h \subset H^1(\Omega)$ by
+$$V_h=\left\{v_h:v_h\in C(\overline{\Omega}), v_h|_K\in P_1(K), \forall K\in T_k\right\},$$
+where $P_1(K)$ is the space of linear polynomials on the element $K$. For fully discretization, we introduce a uniform partition of the integral $[0, T]:$
+$$0=t_0<t_1<\cdots<T_M=T , \text{ where } t_n=n\Delta t, n=0, 1, , ..., M \text{ with the time step size } \Delta t = T/M.$$
+Let 
+$$a^n(w, v)=\int_{\Omega}\sum_{i, j=1}^{d}a^n_{ji}(x)\frac{\partial w}{\partial x_i}\frac{\partial v}{\partial x_j}dx+\int_{\Omega}a_0^n(x)wvdx,$$
+for $w, v\in H^1(\Omega)$ and a function $\varphi(x, t)$, define $\varphi^n(x)=\varphi(x, t_n)$. Then $a^n(., .): H^1(\Omega)\times H^1(\Omega)\to \mathbb{R}$ is the bounded bilinear form and $H^1(\Omega)$-elliptic,
+\begin{align}\label{elliptic}
+	a^n(v, v)\geq c_a\left\|v\right\|_{H^1(\Omega)}^2, \; \forall v\in H^1(\Omega).
+\end{align}
+We now define the fully discrete finite element approximation for the variational problem \eqref{2.1} by the Crank-Nicolson method as follows: Find $u^n_h\in V_h$ for $n=1, 2, ..., M$ such that
+\begin{align}\label{4.2}
+	\langle d_tu^n_h, v \rangle_{L^2(\Omega)}+a^n(u^n_h, v)=\langle F^n, v \rangle_{L^2(\Omega)}.
+\end{align}
+and
+\begin{align}
+	\langle u^0_h, v \rangle_{L^2(\Omega)}=\langle u^0, v \rangle_{L^2(\Omega)}
+\end{align}
+where $d_tu^n_h=\frac{u^n_h-u^{n-1}_h}{\Delta t}, \; n=1, 2, ..., M.$
+\\
+The discrete variational problem \eqref{4.2} admits a unique solution $u^n_h\in V_h$. Let $u_h(x, t)$ be the linear interpolation of $u_h^n$ with respect to $t$. Hence, the discrete version of the optimal control problem \eqref{2.4} will be
+$$J_{\gamma, h}(f)=\frac{1}{2}\left\|A_hf-\hat{\omega}_h\right\|^2_{L^2(Q)}+\frac{\gamma}{2}\left\|f-f^*\right\|^2_{L^2(Q)}\to \min.$$
+Let $f^\gamma_h$ be the solution of this problem is characterized by the variational equation
+\begin{align}\label{3.3}
+	\nabla J_{\gamma, h}(f^\gamma_h)= A_h^*(A_hf^\gamma-\hat{\omega}_h)+\gamma(f^\gamma_h-f^*)=0,
+\end{align}
+where $A_h^*$ is the adjoint operator of $A_h$. But it is hardly to find $A^*_h$ from $A_h$ in practice, so we define a proximate $\hat{A}_h^*$ of $A^*$ instead. Therefore, we suppose that $\hat{A}^*_h\phi=p_h$, where $\phi= u(f) - \omega$ and $p_h$ is the approximate solution of adjoint problem \eqref{2.5}. Therefore, the equation above will be
+\begin{align}\label{3.4}
+	\nabla J_{\gamma, h}(f^\gamma_h)\simeq\nabla J_{\gamma, h}(\hat{f}^\gamma_h)= \hat{A}_h^*(A_h\hat{f}^\gamma-\hat{\omega}_h)+\gamma(\hat{f}^\gamma_h-f^*)=0,
+\end{align}
+Moreover, the observation will have noise in practice, so instead of $\omega$, we suppose that only get $\omega^{\delta}$ satisfying
+$$\left\| \omega-\omega^\delta\right\|_{L^2(Q)}\leq \delta.$$
+Therefore, instead of getting $\hat{f}^\gamma_h$ that satisfies the equation \eqref{3.5}, we will get $\hat{f}^{\gamma, \delta}_h$ satisfying
+\begin{align}\label{3.5}
+	\nabla J_{\gamma, h}\left(\hat{f}^{\gamma, \delta}_h\right)= \hat{A}_h^*(A_h\hat{f}^{\gamma, \delta}_h-\hat{\omega}_h^\delta)+\gamma(\hat{f}^{\gamma, \delta}_h-f^*)=0,
+\end{align}
+with $\hat{\omega}_h^\delta=\omega^\delta- u_h(u_0, u_D)$.
+\subsection{Convergence results}
+\begin{dl}\label{dl3.2}
+	Let $u(x, t)$ be the solution of variational problem \eqref{2.1} - \eqref{2.2} and $u^n_h\in V_h$ for $n=1, 2, ..., M$ be the solution for \eqref{4.2}. Then there holds the error estimate
+	\begin{align}\label{3.6}
+		\left\|u_h-u\right\|_{L^2(Q)}=O\left(h_x^2+\Delta t^2\right).
+	\end{align}
+\end{dl}
+\begin{proof}
+	For $\phi\in H^1(\Omega)$, we define the elliptic projection $R_h:H^1(\Omega)\to V_h$ as the unique solution of the variational problem
+	$$a(R_h\phi, v_h)=a(\phi, v_h), \; \forall v_h\in V_h.$$
+	There holds the error estimate, see[...],
+	\begin{align}\label{ritz}
+		\left\|R_hv-v\right\|_{L^2(\Omega)}+h_x\left\|R_hv-v\right\|_{H^1(\Omega)}\leq ch^s\left\|v\right\|_{H^s(\Omega)}, \; s=\left\{1, 2\right\}.
+	\end{align}
+	The idea here is to split the error form into two terms following
+	$$u_h-u=\left(u_h-R_hu\right)+\left(R_hu-u\right)=\varphi-\rho.$$
+	In general, we consider that $t=t_n$, therefore we have $\varphi^n=u^n_h-R_hu^n$ and %for simplicity, denote $u_t=\frac{\partial u}{\partial t}$, we have
+	\begin{align*}
+		\left\langle d_t\varphi^n, v\right\rangle +\frac{1}{2}\alpha(\varphi^n+\varphi^{n-1}, v)&=\left\langle d_tu^n_h, v\right\rangle+\frac{1}{2}\alpha(u^n_h+u^{n-1}_h, v)\\
+		&-\left\langle R_hd_tu^n, v\right\rangle-\frac{1}{2}\alpha(R_hu^n+R_hu^{n-1}, v)\\
+		&=\frac{1}{2}\left \langle f^n+f^{n-1},v\right\rangle -\left\langle R_hd_tu^n, v\right\rangle-\frac{1}{2}\alpha(u^n+u^{n-1}, v)\\
+		&=\left\langle \frac{\frac{\partial u^n}{\partial t}+\frac{\partial u^{n-1}}{\partial t}}{2}-R_hd_tu^n, v\right\rangle\\
+		&=\left\langle \frac{\frac{\partial u^n}{\partial t}+\frac{\partial u^{n-1}}{\partial t}}{2}-d_tu^n, v\right\rangle+\left\langle d_tu^n-R_hd_tu^n, v\right\rangle\\
+		&=\left\langle \frac{\frac{\partial u^n}{\partial t}+\frac{\partial u^{n-1}}{\partial t}}{2}-d_tu^n, v\right\rangle+\left\langle d_t\rho^n, v\right\rangle.
+	\end{align*}
+	Suppose that $v=\varphi^n+\varphi^{n-1}\in V_N$, we obtain
+	\begin{align}
+		\left\langle d_t\varphi^n, \varphi^n+\varphi^{n-1}\right\rangle &+\frac{1}{2}\alpha(\varphi^n+\varphi^{n-1}, \varphi^n+\varphi^{n-1})\notag\\
+		&=\left\langle d_t\rho^n, \varphi^n+\varphi^{n-1}\right\rangle+\left\langle \frac{\frac{\partial u^n}{\partial t}+\frac{\partial u^{n-1}}{\partial t}}{2}-d_tu^n, \varphi^n+\varphi^{n-1}\right\rangle \label{ptss1}
+	\end{align}
+	In the right hand side of \eqref{ptss1}, we analyze two terms, the first is 
+	\begin{align*}
+		\chi_{1,n}&=d_t\rho^n=d_tu^n-R_hd_tu^n\\
+		\Rightarrow\left\|\chi_{1,n}\right\|_{L^2(\Omega)}&=\left\|d_tu^n-R_hd_tu^n\right\|_{L^2(\Omega)}\leq ch_x^2\left\|d_tu^n\right\|_{H^2(\Omega)}
+		=\frac{ch_x^2}{\Delta t}\left\|\int_{t_{n-1}}^{t_n}u_tds\right\|_{H^2(\Omega)}\\
+		&\leq \frac{ch_x^2}{\Delta t}\sqrt{\int_{t_{n-1}}^{t_n}1^2dt}\;\sqrt{\int_{t_{n-1}}^{t_n} \left\|u_t\right\|_{H^2(\Omega)}^2ds}=\frac{ch_x^2}{\sqrt{\Delta t}}\left\|u_t\right\|_{L^2\left(t_{n-1}, t_n;\, H^2(\Omega)\right)}.
+	\end{align*}
+	And the second is
+	\begin{align*}
+		\chi_{2,n}&=\frac{\frac{\partial u^n}{\partial t}+\frac{\partial u^{n-1}}{\partial t}}{2}-d_tu^n=\frac{\frac{\partial u^n}{\partial t}+\frac{\partial u^{n-1}}{\partial t}}{2}-\frac{u^n-u^{n-1}}{\Delta t}\\
+		&=\frac{\frac{\partial u}{\partial t}(t_n)+\frac{\partial u}{\partial t}(t_n-\Delta t)}{2}-\frac{u(t_n)-u(t_n-\Delta t)}{\Delta t}.
+	\end{align*}
+	We have Taylor expansion of a function
+	$$f(x+h)=f(x)+\sum_{n=1}^{N}\frac{f^{(n)}(x)}{n!}h^n+\int_{x}^{x+h}\frac{f^{(N+1)}(s)}{N!}(x+h-s)^Nds.$$
+	Due to Taylor expansion, we have
+	\begin{align*}
+		&\frac{\partial u}{\partial t}(.,t_n-\Delta t)=\frac{\partial u^{n-1}}{\partial t}=\frac{\partial u^n}{\partial t}-\Delta tu_{tt}^n+\int_{t_n}^{t_n-\Delta t} u_{ttt}(.,s)(t_n-\Delta t-s)ds,\\
+		&u(.,t_n-\Delta t)=u^{n-1}=u^n-\Delta tu_{t}^n+\frac{\Delta t^2}{2}u_{tt}^n+\int_{t_n}^{t_n-\Delta t} \frac{u_{ttt}(.,s)}{2}(t_k-\Delta t-s)^2ds.
+	\end{align*}
+	\begin{align*}
+		\Rightarrow \chi_{2,n}&=\frac{1}{2}\left(2\frac{\partial u^n}{\partial t}-\Delta tu_{tt}^n+\int_{t_n}^{t_n-\Delta t} u_{ttt}(.,s)(t_k-\Delta t-s)ds\right)\\
+		&-\frac{1}{\Delta t}\left(\Delta tu_{t}^n-\frac{\Delta t^2}{2}u_{tt}^n-\int_{t_n}^{t_n-\Delta t} \frac{u_{ttt}(.,s)}{2}(t_n-\Delta t-s)^2ds\right)\\
+		&=\frac{1}{2}\int_{t_{n-1}}^{t_n} (s-t_{n-1})u_{ttt}(.,s)ds-\frac{1}{2\Delta t}\int_{t_{n-1}}^{t_n}(s-t_{n-1})^2u_{ttt}(.,s)ds\\
+		&=\frac{1}{2}\int_{t_{n-1}}^{t_n}\left(s-t_{n-1}-\frac{(s-t_{n-1})^2}{\Delta t}\right)u_{ttt}(.,s)ds.
+	\end{align*}
+	\begin{align*}
+		\Rightarrow\left\|\chi_{2, n}\right\|_{L^2(\Omega)}&=\frac{1}{2}\left\|\int_{t_{n-1}}^{t_n}\left(s-t_{n-1}-\frac{(s-t_{n-1})^2}{\Delta t}\right)u_{ttt}(.,s)ds\right\|_{L^2(\Omega)}\\
+		&\leq\frac{1}{2}\sqrt{\int_{t_{n-1}}^{t_n}\left(s-t_{n-1}-\frac{(s-t_{n-1})^2}{\Delta t}\right)^2ds}\;\sqrt{\int_{t_{n-1}}^{t_n}\left\|u_{ttt}\right\|^2_{L^2(\Omega)}ds }\\
+		&=\frac{1}{2}\sqrt{\frac{\Delta t^3}{30}}\;\left\|u_{ttt}\right\|_{L^2(t_{n-1}, t_n;\, \Omega)}.
+	\end{align*}
+	Hence, we obtain
+	\begin{align}\label{ptss2}
+		&\left\langle \chi_{1, n}, \varphi^n+\varphi^{n-1}\right\rangle+\left\langle \chi_{2, n}, \varphi^n+\varphi^{n-1}\right\rangle\notag\\
+		&\qquad\qquad\leq\left[\frac{ch_x^2}{\sqrt{\Delta t}}\left\|u_t\right\|_{L^2\left(t_{n-1}, t_n;\, H^2(\Omega)\right)}+\sqrt{\frac{\Delta t^3}{30}}\;\left\|u_{ttt}\right\|_{L^2(t_{n-1}, t_n;\, \Omega)}\right]\left\|\varphi^n+\varphi^{n-1}\right\|_{L^2(\Omega)}.
+	\end{align} 
+	On the other hand, due to \eqref{elliptic}, we estimate the left hand side of  (\ref{ptss1}) such that
+	\begin{align}\label{ptss3}
+		\left\langle d_t\varphi^n, \varphi^n+\varphi^{n-1}\right\rangle &+\frac{1}{2}\alpha(\varphi^n+\varphi^{n-1}, \varphi^n+\varphi^{n-1})\notag\\
+		&\geq\frac{1}{\Delta t}\left[\left\|\varphi^n\right\|^2_{L^2(\Omega)}-\left\|\varphi^{n-1}\right\|^2_{L^2(\Omega)}\right]+c_a\left\|\varphi^n+\varphi^{n-1}\right\|^2_{L^2(\Omega)}.
+	\end{align}
+	According to \eqref{ptss1} - \eqref{ptss2} - \eqref{ptss3} for $n=1, 2,\dots, M$ 
+	\begin{align*}
+	\left\|\varphi^M\right\|^2_{L^2(\Omega)}&-\left\|\varphi^{0}\right\|^2_{L^2(\Omega)}+2\Delta t\sum_{n=1}^{M}c_a\left\|\varphi^n+\varphi^{n-1}\right\|^2_{L^2(\Omega)}\\
+	&\leq\sum_{n=1}^{M}\left[ch_x^2\left\|u_t\right\|_{L^2\left(t_{n-1}, t_n;\, H^2(\Omega)\right)}+\frac{\Delta t^2}{2\sqrt{30}}\;\left\|u_{ttt}\right\|_{L^2(t_{n-1}, t_n;\, \Omega)}\right]\sqrt{\Delta t}\left\|\varphi^n+\varphi^{n-1}\right\|_{L^2(\Omega)}\\
+	&\leq C\delta h_x^4\sum_{n=1}^{M}\left\|u_t\right\|_{L^2\left(t_{n-1}, t_n;\, H^2(\Omega)\right)}^2+\delta \Delta t\sum_{n=1}^{M}\left\|\varphi^n+\varphi^{n-1}\right\|^2_{L^2(\Omega)}\\
+	&+C\delta \Delta t^4\sum_{n=1}^{M}\left\|u_{ttt}\right\|_{L^2(t_{n-1}, t_n;\, \Omega)}^2+\delta \Delta t\sum_{n=1}^{M}\left\|\varphi^n+\varphi^{n-1}\right\|^2_{L^2(\Omega)}.
+	\end{align*}
+	\begin{align*}
+	\Rightarrow\sum_{n=1}^{M}\Delta t\left\|\varphi^n+\varphi^{n-1}\right\|^2&\leq C h_x^4\left\|u_t\right\|_{L^2\left(0, T;\, H^2(\Omega)\right)}^2+C \Delta t^4\left\|u_{ttt}\right\|_{L^2(0, T;\, \Omega)}^2+\left\|\varphi^{0}\right\|^2\\
+	&\leq C h_x^4\left\|u_t\right\|_{L^2\left(0, T;\, H^2(\Omega)\right)}^2+C \Delta t^4\left\|u_{ttt}\right\|_{L^2(0, T;\, \Omega)}^2+Ch_x^4\left\|u^{0}\right\|^2_{H^2(\Omega)}.
+	\end{align*}
+	For $x\in \Omega,\, t\in [t_{n-1}, t_n]$, we have
+	\begin{align*}
+		&u_h(x, t)=\frac{t-t_{n-1}}{\Delta t}u_h^{n-1}+\frac{t_n-t}{\Delta t}u_h^{n},\\
+		&R_hu(x, t)=\frac{t-t_{n-1}}{\Delta t}R_hu^{n-1}+\frac{t_n-t}{\Delta t}R_hu^{n}.
+	\end{align*}
+	\begin{align*}
+		\Rightarrow \int_{t_{n-1}}^{t_n}&\left\|u_h-R_hu\right\|_{L^2(\Omega)}^2dt\\&= \int_{t_{n-1}}^{t_n}\left\|\frac{t-t_{n-1}}{\Delta t}\left(u_h^{n-1}-Ru^{n-1}\right)+\frac{t_n-t}{\Delta t}\left(u_h^{n}-Ru^n\right)\right\|_{L^2(\Omega)}^2dt\\
+		&= \int_{t_{n-1}}^{t_n}\left\|\frac{t-t_{n-1}}{\Delta t}\varphi^{n-1}+\frac{t_n-t}{\Delta t}\varphi^n\right\|_{L^2(\Omega)}^2dt,\;\; \varphi^n=u_h^n-R_hu^n\\
+		&=\int_{t_{n-1}}^{t_n}\left\|\frac{1}{2}\left(\varphi^n+\varphi^{n-1}\right)+\frac{t_n+t_{n-1}-2t}{2\Delta t}\left(\varphi^n-\varphi^{n-1}\right)\right\|_{L^2(\Omega)}^2dt\\
+		&\leq\frac{1}{2}\int_{t_{n-1}}^{t_n}\left\|\varphi^n+\varphi^{n-1}\right\|_{L^2(\Omega)}^2dt+\int_{t_{n-1}}^{t_n}\left\|\frac{t_n+t_{n-1}-2t}{2\Delta t}\left(\varphi^n-\varphi^{n-1}\right)\right\|_{L^2(\Omega)}^2dt\\
+		&\leq\frac{1}{2}\Delta t\left\|\varphi^n+\varphi^{n-1}\right\|_{L^2(\Omega)}^2+\sqrt{\int_{t_{n-1}}^{t_n}\left(\frac{t_n+t_{n-1}-2t}{2}\right)^2dt}\left\|d_tu_h^n-R_hd_tu_h^n\right\|^2\\
+		&\leq\frac{1}{2}\Delta t\left\|\varphi^n+\varphi^{n-1}\right\|_{L^2(\Omega)}^2+Ch_x^4\,\sqrt{\Delta t}\left\|u_{h, t}\right\|_{L^2\left(t_{n-1}, t_n;\, H^2(\Omega)\right)}^2.
+	\end{align*}
+	Hence,
+	\begin{align*}
+	\int_0^T\left\|u_h-R_hu\right\|_{L^2(\Omega)}^2dt\leq \frac{1}{2}\sum_{n=1}^{M}\Delta t\left\|\varphi^n+\varphi^{n-1}\right\|^2+Ch_x^4\,\sqrt{\Delta t}\left\|u_{h, t}\right\|_{L^2\left(0, T;\, H^2(\Omega)\right)}^2=O(h_x^4+\Delta t^4).
+	\end{align*}
+	$$\Rightarrow \left\|u_h-R_hu\right\|_{L^2(Q)}=O(h_x^2+\Delta t^2).$$
+	Due to \eqref{ritz}, we obtain
+	$$\left\|R_hu-u\right\|_{L^2(Q)}=O(h_x^2+\Delta t^2).$$
+	Therefore, the theory is proved.
+\end{proof}
+\noindent What is more,
+\begin{align*}
+	\left\| \left(A^*-\hat{A}^*_h\right)\phi\right\|_{L^2(Q)}^2=\int_Q (p-p_h)^2dx=\left\| p-p_h\right\|_{L^2(Q)}^2
+\end{align*}
+\begin{align}\label{3.8}
+	\Rightarrow \left\| \left(A^*-A^*_h\right)\phi\right\|_{L^2(Q)}\leq c(h_x^2+\Delta t^2).
+\end{align}
+Let $u_h[f]$ and $u_h(u_0, u_D)$ are the approximate solutions of \cref{bt2.1} and \cref{bt2.2} by using finite element method. We define $A_h$ of $A$ is $A_hf=\ell u_h[f]$ and $\hat{\omega}_h=\omega-\ell u_h(u_0, u_D)$. We have
+\begin{align*}
+	\left\| \left(A-A_h\right)f\right\|_{L^2(Q)}^2=\left\|  u[f]- u_h[f]\right\|_{L^2(Q)}^2
+\end{align*}
+\begin{align}\label{3.9}
+	\Rightarrow\left\| \left(A-A_h\right)f\right\|_{L^2(Q)}\leq c(h_x^2+\Delta t^2)
+\end{align}
+and 
+\begin{align*}
+	\left\|\left(\hat{\omega}-\hat{\omega}_h\right)\right\|_{L^2(Q)}^2=\left\| u(u_0,u_D)-u_h(u_0, u_D)\right\|_{L^2(Q)}^2
+\end{align*}
+\begin{align}\label{3.10}
+	\Rightarrow\left\|\left(\hat{\omega}-\hat{\omega}_h\right)\right\|_{L^2(Q)}\leq c(h_x^2+\Delta t^2)
+\end{align}
+
+\begin{dl}\label{dl3.3}
+	Let $f^\gamma$ and $\hat{f}^\gamma_h$ are the solution of variational problems \eqref{3.1} and \eqref{3.4}, respectively. Then there hold a error estimate
+	\begin{align}\label{3.11}
+	\left\|f^\gamma-\hat{f}^\gamma_h \right\|_{L^2(Q)}\leq c(h_x^2+\Delta t^2).
+	\end{align}
+\end{dl}
+\begin{proof} From equations \eqref{3.1} and \eqref{3.4}, we will have
+	\begin{align*}
+		\gamma \left(f^\gamma-\hat{f}^\gamma_h\right)&=\hat{A}^*_{i, h}\left(A_h\hat{f}^\gamma_h-\hat{\omega}_h\right)-A^*_i\left(Af^\gamma-\hat{\omega}\right)\\
+		&=\left(\hat{A}^*_{i, h}-A^*_i\right)\left(A_h\hat{f}^\gamma_h-\hat{\omega}_h\right)+A^*_iA_h\left(\hat{f}^\gamma_h-f^\gamma\right)\\
+		&\quad+A^*\left(A_h-A\right)f^\gamma+A^*_i\left(\hat{\omega}-\hat{\omega}_h\right)
+	\end{align*}
+	According to \eqref{3.8}, \eqref{3.9} and \eqref{3.10}, we have
+	\begin{align*}
+		&\left\| \left(\hat{A}^*_{i, h}-A^*_i\right)\left(A_h\hat{f}^\gamma_h-\hat{\omega}_h\right)\right\|_{L^2(Q)}\leq c(h_x^2+\Delta t^2),\\
+		&\left\| A^*_i\left(A_h-A\right)f^\gamma\right\|_{L^2(Q)}\leq c(h_x^2+\Delta t^2),\\
+		&\left\|A^*_i\left(\hat{\omega}-\hat{\omega}_h\right) \right\|_{L^2(Q)}\leq c(h_x^2+\Delta t^2).
+	\end{align*}
+	We take apart this
+	$$A^*_iA_h\left(\hat{f}^\gamma_h-f^\gamma\right)=A^*_i\left(A_h-A\right)\left(\hat{f}^\gamma_h-f^\gamma\right)+A^*_iA\left(\hat{f}^\gamma_h-f^\gamma\right).$$
+	Moreover, we have
+	\begin{align*}
+		&\left\langle A^*_i\left(A_h-A\right)\left(\hat{f}^\gamma_h-f^\gamma\right), f^\gamma-\hat{f}^\gamma_h\right\rangle_{L^2(Q)}\leq ch^2\left\| f^\gamma-\hat{f}^\gamma_h\right\|^2_{L^2(Q)},\\
+		&\left\langle A^*_iA\left(\hat{f}^\gamma_h-f^\gamma\right), f^\gamma-\hat{f}^\gamma_h\right\rangle_{L^2(Q)}=-\left\|A\left(f^\gamma-\hat{f}^\gamma_h\right) \right\|^2_{L^2(Q)}<0.
+	\end{align*}
+	The theorem is proved.
+\end{proof}
+\begin{cy}\label{cy3.1}
+	Let $f^\gamma$ and $\hat{f}^\gamma_h$ are the solution of variational problems \eqref{3.1} and \eqref{3.5}, respectively. Then there hold a error estimate
+	\begin{align}\label{3.12}
+		\left\|f^\gamma-\hat{f}^{\gamma, \delta}_h \right\|_{L^2(Q)}\leq c(h_x^2+\Delta t^2+\delta).
+	\end{align}
+\end{cy}
+
+
+\section{Numerical results}\label{section5}
+
+\section{Conclusion}
+
+\newpage
+\bibliography{references}{}
+\bibliographystyle{plain}
+
+\end{document}

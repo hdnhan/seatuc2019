@@ -1,0 +1,83 @@
+-- FreeFem++ v  3.610001 (date jeu. 12 juil. 2018 15:05:23)
+ Load: lg_fem lg_mesh lg_mesh3 eigenvalue
+    1 : load "msh3"(load: loadLibary C:\Program Files (x86)\FreeFem++\\.\msh3 = 0)
+    2 : load "medit"(load: loadLibary C:\Program Files (x86)\FreeFem++\\.\medit = 0)
+    3 :
+    4 : int nn = 8;
+    5 : int Nt = nn;
+    6 : int Nx = nn, Ny = nn;
+    7 : int[int] labels = [1, 1, 1, 1];
+    8 : mesh Th = square(Nx, Ny, label = labels);
+    9 : fespace Vh(Th, P1);
+   10 :
+   11 : mesh3 Th3 = cube(Nx, Ny, Nt);
+   12 : fespace Vh3(Th3, P1);
+   13 : Vh3 uu;
+   14 : Vh3 ue = exp(z) * sin(pi * x) * sin(pi * y);
+   15 : Vh3 fe = (1 + 2 * pi ^ 2) * ue;
+   16 :
+   17 : real T = 1, dt = T / Nt;
+   18 :
+   19 : Vh uprev = ue(x, y, 0);
+   20 : Vh fprev = fe(x, y, 0);
+   21 : Vh u, v;
+   22 :
+   23 : for(int ny = 0; ny <= Ny; ny++){
+   24 :         for(int nx = 0; nx <= Nx; nx++){
+   25 :                 uu[][ny * (Nx + 1) + nx] = uprev[][ny * (Nx + 1) + nx];
+   26 :         }
+   27 : }
+   28 :
+   29 : macro grad(u) [dx(u), dy(u)] )   [dx(u), dy(u)]//
+   30 :
+   31 : for(int nt = 1; nt <= Nt; nt++){
+   32 :
+   33 :         Vh unext = ue(x, y, nt * dt);
+   34 :         Vh fnext = fe(x, y, nt * dt);
+   35 :
+   36 :         solve CrankNicolson(u, v, solver = CG) =
+   37 :                         int2d(Th)(u * v / dt + 0.5 * grad(u)   [dx(u), dy(u)]' * grad(v)   [dx(v), dy(v)])
+   38 :                         + int2d(Th)(-uprev * v / dt + 0.5 * grad(uprev)   [dx(uprev), dy(uprev)] '* grad(v)   [d°;¦x(v), dy(v)])
+   39 :                         - int2d(Th)(0.5 * (fprev + fnext) * v)
+   40 :                         - int1d(Th, 1, 2, 3, 4)(dx(unext) * N.x * v + dy(unext) * N.y * v);
+   41 :
+   42 :         for(int ny = 0; ny <= Ny; ny++){
+   43 :                 for(int nx = 0; nx <= Nx; nx++){
+   44 :                         uu[][nt * (Nx + 1) * (Ny + 1) + ny * (Nx + 1) + nx] = u[][ny * (Nx + 1) + nx];
+   45 :                 }
+   46 :         }
+   47 :
+   48 :         fprev = fnext;
+   49 :         uprev = u;
+   50 : }
+   51 :
+   52 : cout << "Erorr in L2: " << sqrt(int3d(Th3)((uu - ue) ^ 2)) << endl;  sizestack + 1024 =6064  ( 5040 )
+ 
+  -- Square mesh : nb vertices  =81 ,  nb triangles = 128 ,  nb boundary edges 32
+  Enter: BuildCube: 6
+    kind = 6 n tet Cube = 6 / n slip 6 70
+  Cube  nv=729 nt=3072 nbe=768
+  Out:  BuildCube
+  -- FESpace: Nb of Nodes 729 Nb of DoF 729
+  -- Solve :
+          min -0.709213  max 1.07826
+  -- Solve :
+          min -0.514781  max 1.17911
+  -- Solve :
+          min -0.893654  max 1.27745
+  -- Solve :
+          min -0.84426  max 1.40317
+  -- Solve :
+          min -1.19737  max 1.53496
+  -- Solve :
+          min -1.24034  max 1.69129
+  -- Solve :
+          min -1.60473  max 1.86451
+  -- Solve :
+          min -1.73593  max 2.06237
+Erorr in L2: 0.385977
+times: compile 0.122s, execution 0.041s,  mpirank:0
+ ######## We forget of deleting   131 Nb pointer,   0Bytes  ,  mpirank 0, memory leak =0
+ CodeAlloc : nb ptr  3190,  size :396864 mpirank: 0
+Ok: Normal End
+ try getConsole D:\Study\HUST\FEM\Co Mai\seatuc\freefem++\crank-nicolson2D.edp
