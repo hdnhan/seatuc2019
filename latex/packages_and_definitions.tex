@@ -1,23 +1,55 @@
 % packages
 %\usepackage[utf8]{vietnam}
-\usepackage{amsmath, amssymb, amsthm}
-\usepackage{color, graphicx, cases}
+
+
+% ---------------------------------------------
+% perso : packages and macros
+% ---------------------------------------------
+\usepackage{latexsym}
+\usepackage{mathrsfs}
+%\usepackage{amsfonts}
+\usepackage{amssymb}
 \usepackage{hyperref}
 \hypersetup{
-	colorlinks=true,
-	linkcolor=black,
-	filecolor=black,      
-	urlcolor=black,
+	colorlinks=true, %colorise les liens
+	breaklinks=true, %permet le retour a la ligne dans les liens trop longs
+	urlcolor=blue, %couleur des hyperliens
+	linkcolor=blue, %couleur des liens internes
+	citecolor=blue, %couleur des references
+	pdftitle={An implicit high order discontinuous
+		Galerkin level set method
+		for two-phase flow problems}, %informations apparaissant dans
+	pdfauthor={Ta Pigeonneau Saramito}, %les informations du document
+	pdfsubject={level set} %sous Acrobat.
 }
-\usepackage{array, multirow, booktabs}
-\usepackage{caption, subcaption}
-\usepackage{ragged2e} % using justifying
+\newcommand{\Frac}[2] {\displaystyle \frac{#1}{#2}}
+\newcommand{\red}[1]  {{\color[rgb]{1,0,0}{{#1}}}}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\newcommand{\jump}[1]    {[\![{#1}]\!]}
+\newcommand{\average}[1] {\{\!\!\{{#1}\}\!\!\}}
+
+
+
+
+\usepackage{amsmath, amssymb, amsthm}
+%\usepackage{color, graphicx, cases}
+%\usepackage{hyperref}
+%\hypersetup{
+%	colorlinks=true,
+%	linkcolor=black,
+%	filecolor=black,      
+%	urlcolor=black,
+%}
+%\usepackage{array, multirow, booktabs}
+%\usepackage{caption, subcaption}
+%\usepackage{ragged2e} % using justifying
 \numberwithin{equation}{section}
 \everymath{\displaystyle}
-\usepackage{titling}
+%\usepackage{titling}
 
-\usepackage[a4paper,left=35mm,top=31mm,right=20mm,bottom=30mm]{geometry}
-\renewcommand{\baselinestretch}{1.5}
+%\usepackage[a4paper,left=35mm,top=31mm,right=20mm,bottom=30mm]{geometry}
+%\renewcommand{\baselinestretch}{1.5}
 
 % new definitions
 \newtheorem{dl}{Theorem}[section]

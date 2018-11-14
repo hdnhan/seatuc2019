@@ -1,0 +1,145 @@
+% 6 pages max
+\documentclass[notitlepage,a4paper,fleqn,9pt]{icmfarticle}
+\input{icmfstyle.tex}
+\title{\bf 
+  Numerical simulation of heat transfer problem by Freefem++ software
+}
+\author{\normalsize\bf
+Mai Ta$^{1,2}$, Franck Pigeonneau and Pierre Saramito$^2$
+}
+\date{\normalsize\vspace{-2ex}\em
+$^1$~Surface du verre et interfaces, UMR 125 CNRS/Saint-Gobain\\
+39, quai Lucien Lefranc - BP 135, 93303 Aubervilliers cedex, France\\
+\href{mailto:Franck.Pigeonneau@saint-gobain.com}{Franck.Pigeonneau@saint-gobain.com},\\[1.1mm]
+%
+$^2$~Lab. J. Kuntzmann, CNRS and Grenoble university\\
+51, rue des math\'ematiques BP 53 - Domaine Universitaire, 38041 Grenoble Cedex 9, France \\
+\href{mailto:tathithanhmai@gmail.com}{tathithanhmai@gmail.com},
+\href{mailto:Pierre.Saramito@imag.fr}{Pierre.Saramito@imag.fr}
+}
+% ---------------------------------------------
+% perso : packages and macros
+% ---------------------------------------------
+\usepackage{latexsym}
+\usepackage{mathrsfs}
+%\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\hypersetup{
+colorlinks=true, %colorise les liens
+breaklinks=true, %permet le retour a la ligne dans les liens trop longs
+urlcolor=blue, %couleur des hyperliens
+linkcolor=blue, %couleur des liens internes
+citecolor=blue, %couleur des references
+pdftitle={An implicit high order discontinuous
+	Galerkin level set method
+  	for two-phase flow problems}, %informations apparaissant dans
+pdfauthor={Ta Pigeonneau Saramito}, %les informations du document
+pdfsubject={level set} %sous Acrobat.
+}
+\newcommand{\Frac}[2] {\displaystyle \frac{#1}{#2}}
+\newcommand{\red}[1]  {{\color[rgb]{1,0,0}{{#1}}}}
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+\newcommand{\jump}[1]    {[\![{#1}]\!]}
+\newcommand{\average}[1] {\{\!\!\{{#1}\}\!\!\}}
+% ---------------------------------------------
+\begin{document}
+
+\raggedcolumns
+
+\maketitle
+\vspace{-3mm}
+\noindent\rule{\textwidth}{.1pt}
+
+\noindent
+Abstract\\
+\vspace{1ex}
+
+\noindent
+An implicit high order time (BDF) and polynomial degree discontinuous Galerkin (DG) level set method is presented in this talk. The major advantage of this new approach is an accurate mass conservation during the convection of the level set function, thanks to the implicit method. Numerical experiments are presented for the Zalesak and the Leveque test cases. The convergence rates versus time and space are investigated for both BDF and DG high orders. The capture of the zero level set interface is then improved by using an auto-adaptive mesh procedure. 
+The problem is approximated by using the discontinuous Galerkin method for both the level set function, the velocity and the pressure fields.
+\\
+\vspace{1ex}
+
+\noindent {\em Keywords: Level set method, discontinuous Galerkin FEM, high order methods}
+
+% ligne de separation
+\noindent\rule{\textwidth}{.1pt}\vspace{2mm}
+
+\begin{multicols}{2}
+% --------------------------------------------------------------------
+\section{Introduction}
+% --------------------------------------------------------------------
+Let us denote, at any time $t\geq 0$
+by $\Omega(t)\subset\mathbb{R}^d$, $d=2,3$, the bounded moving domain and
+$\Gamma(t)=\partial\Omega(t)$ its boundary.
+A level set function $\phi$ is defined for any time
+in a bounded computational domain denoted by $\Lambda\subset\mathbb{R}^d$,
+and containing $\Omega(t)$ at any time,
+such that
+\mbox{$
+  \Gamma(t) = \{ \boldsymbol{x}\in\Lambda ; \ \phi(t,\boldsymbol{x})=0 \}
+$}.
+Since every point belonging to the boundary $\Gamma(t)$ will still
+continue to belong to it for any time, we have:
+\begin{eqnarray}
+    \Frac{{\rm d}}{{\rm d}t} (\phi(t,\boldsymbol{x})) = 0
+    \ \Longleftrightarrow \ 
+    \Frac{\partial\phi}{\partial t} + \boldsymbol{u}.\nabla\phi = 0
+    \ \mbox{ in } ]0,+\infty[\times \Lambda 
+    \label{eq-level-set}
+\end{eqnarray}
+where 
+$\boldsymbol{u}=\dot{\boldsymbol{x}}$ denotes the velocity field.
+The normal to the boundary $\Gamma(t)$ writes
+\mbox{$
+    \boldsymbol{\nu}
+    =
+    \nabla\phi/|\nabla\phi|
+$}
+and then deformations of $\Gamma(t)$ are only due
+to the normal component $\boldsymbol{u}\cdot\boldsymbol{\nu}$
+of the velocity on~$\Gamma(t)$.
+For a given velocity field $\boldsymbol{u}$,
+the problem is to find $\phi$ defined in 
+$]0,+\infty[\times \Lambda$ and satisfying \eqref{eq-level-set}
+together with an initial condition $\phi(t\!=\!0)=\phi_0$
+where $\phi_0$ is given.
+This is a linear \emph{hyperbolic problem}.
+% -------------------------------------------------------------------
+\section{Numerical method} 
+% -------------------------------------------------------------------
+% -------------------------------------------------------------------
+\subsection{Discontinuous space approximation} 
+% -------------------------------------------------------------------
+% -------------------------------------------------------------------
+\subsection{Time discretization by an implicit scheme}
+% -------------------------------------------------------------------
+% --------------------------------------------
+\section{Tests and discussion}
+% --------------------------------------------
+\subsection{Exact solution}
+% --------------------------------------------
+%----------------------------------------------------------------------
+\subsection{A problem of thermal engineering}
+%----------------------------------------------------------------------
+\subsection{Numercial experiment of inverse problem}
+%----------------------------------------------------------------------
+\section{Conclusion}
+
+In this contribution, a level set transport is investigated with an implicit high order time (BDF) and polynomial degree discontinuous Galerkin finite element method. Using three well-known cases, i.e. a rotation circle, and the Zalesak and Leveque tests, we establish that our method present a nice mesh convergence. For the Zalesak case, the numerical solution converges toward the exact solution in $h^2$ whatever the polynomial degree mainly due to the non-regularity of the exact solution. For the Leveque test, the mesh convergence is better but stays limited at high polynomial degree due to the sharp interface observed during the advection process.
+For the rotating circle, up too oour tests, there is no a priori limit for the convergence rate versus $h$
+and we can conclude that the limitation of the convergence rate appears when the region $\Omega$ has poor regularity.
+
+It is noteworthy that the mass loss becomes very small when the polynomial degree increases. This means that it is not necessary to introduce artificially the mass conservation. This is an important feature for the future work when the transport scheme will be coupled with the Navier-Stokes equations.
+
+
+% --------------------------------------------------------------------
+% biblio
+% --------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{biblio,florence-2016-autobib}
+\vfill
+\end{multicols}
+\end{document}
