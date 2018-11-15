@@ -1,11 +1,9 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [1][-]{section.2}{Direct problem}{}% 2
-\BOOKMARK [1][-]{section.3}{Inverse problem}{}% 3
-\BOOKMARK [2][-]{subsection.3.1}{conjugate gradient method}{section.3}% 4
-\BOOKMARK [2][-]{subsection.3.2}{Finite element discretization}{section.3}% 5
-\BOOKMARK [2][-]{subsection.3.3}{Approximation of A, A*}{section.3}% 6
-\BOOKMARK [1][-]{section.4}{Tests and discussion}{}% 7
-\BOOKMARK [2][-]{subsection.4.1}{Exact solution}{section.4}% 8
-\BOOKMARK [2][-]{subsection.4.2}{A problem of thermal engineering}{section.4}% 9
-\BOOKMARK [2][-]{subsection.4.3}{Numerical experiment of inverse problem}{section.4}% 10
-\BOOKMARK [1][-]{section.5}{Conclusion}{}% 11
+\BOOKMARK [1][-]{section.2}{Numerical method}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Direct problem}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Inverse problem}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{Tests and discussion}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{Error evaluation with exact solution}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.2}{A problem of thermal engineering}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.3}{Numerical experiment of inverse heat problem}{section.3}% 8
+\BOOKMARK [1][-]{section.4}{Conclusion}{}% 9
