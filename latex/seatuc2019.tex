@@ -1,14 +1,9 @@
 % 6 pages max
-\documentclass[notitlepage,a4paper,fleqn,9pt]{icmfarticle}
-\input{icmfstyle.tex}
+\documentclass[twocolumn]{article}
 \input{packages_and_definitions}
-\everymath{\displaystyle}
-\title{\bf 
-  Numerical simulation of heat transfer problem by Freefem++ software
-}
-\author{\normalsize\bf
-Mai Ta$^{1,2}$, Franck Pigeonneau and Pierre Saramito$^2$
-}
+
+\title{\bf Numerical simulation of heat transfer problem by Freefem++ software}
+\author{\normalsize\bf Mai Ta$^{1,2}$, Franck Pigeonneau and Pierre Saramito$^2$}
 \date{\normalsize\vspace{-2ex}\em
 $^1$~Surface du verre et interfaces, UMR 125 CNRS/Saint-Gobain\\
 39, quai Lucien Lefranc - BP 135, 93303 Aubervilliers cedex, France\\
@@ -20,50 +15,44 @@ $^2$~Lab. J. Kuntzmann, CNRS and Grenoble university\\
 \href{mailto:Pierre.Saramito@imag.fr}{Pierre.Saramito@imag.fr}
 }
 
+\justifying
 % ---------------------------------------------
 \begin{document}
-
-\raggedcolumns
-
+\twocolumn[
+\begin{@twocolumnfalse}
 \maketitle
-\vspace{-3mm}
-\noindent\rule{\textwidth}{.1pt}
-
-\noindent
+\rule{\textwidth}{.1pt}
 Abstract\\
-\vspace{1ex}
-
 \noindent
 ...
 \\
 \vspace{1ex}
-
 \noindent {\em Keywords: Inverse source problems, least squares method, Tikhonov regularization, space-time finite element method, conjugate gradient method}
+\rule{\textwidth}{.1pt}
+\vspace{2mm}
+\end{@twocolumnfalse}]
 
-% ligne de separation
-\noindent\rule{\textwidth}{.1pt}\vspace{2mm}
-
-\begin{multicols}{2}
 % --------------------------------------------------------------------
 \section{Introduction}
 % --------------------------------------------------------------------
+
 Let $\Omega \subset \mathbb{R}^d,\, d\in \mathbb{N^+}$ be a bounded domain with a boundary $\Gamma$ and endow the cylinder $Q=\Omega\times (0,\, T]$ and lateral surface area $S=\Gamma \times (0,\, T]$ where $T>0$. 
 \\
 Consider the heat equation:
 \begin{align}\label{1.1}
-	\qquad\frac{\partial u(x, t)}{\partial t}+\mathcal{L}u(x, t)=F(x, t), \quad(x, t)\in Q,
+	\frac{\partial u(x, t)}{\partial t}+\mathcal{L}u(x, t)=F(x, t), \quad(x, t)\in Q,
 \end{align}
 with the Dirichlet boundary and initial conditions, respectively
 \begin{align}
-	\qquad\qquad u(x, t)&=u_D(x, t),\quad(x, t)\in S, \label{1.2}\\
+	u(x, t)&=u_D(x, t),\quad(x, t)\in S, \label{1.2}\\
 	u(x, 0)&=u_0(x),\quad\quad\, x\in \Omega,\label{1.3}
 \end{align}
 where
 \begin{align*}
-	&\mathcal{L}u(x, t) = -\sum_{i, j=1}^{d}\frac{\partial}{\partial x_i}\left(a_{ji}(x, t)\frac{\partial u(x, t)}{\partial x_j}\right)+a_0(x, t)u(x, t)\\
+	&\mathcal{L}u = -\sum_{i, j=1}^{d}\frac{\partial}{\partial x_i}\left(a_{ji}\frac{\partial u}{\partial x_j}\right)+a_0u,\\
 	&a_{ji}\in L^{\infty}(Q),\, a_{ij}=a_{ji},\; \forall i, j\in \{1, 2, ..., d\},\\
 	&\lambda_1\left\|\xi\right\|^2\leq \sum_{i, j=1}^{d}a_{ij}\xi_i\xi_j\leq \lambda_2\left\|\xi\right\|^2,\; \forall \xi\in\mathbb{R}^d,\\
-	&a_0\in L^{\infty}(Q),\; 0\leq a_0(x, t)\leq \mu_1,\; (x, t)\in Q\\ 
+	&a_0\in L^{\infty}(Q),\; 0\leq a_0(x, t)\leq \mu_1,\; (x, t)\in Q,\\ 
 	&u_0\in L^2(\Omega),\;u_D\in L^2(S),
 \end{align*}
 with $\lambda_1$ and $\lambda_2$ are positive constants and $\mu_1\geq 0$.
@@ -75,43 +64,43 @@ The problem is that to determine $u$ when all data $a_{ji},\,a_0,\,u_0,\,u_D$ an
 \subsection{Direct problem}
 % --------------------------------------------------------------------
 
-Find $u(.,t)\in H^1(\Omega)$ satisfying
+Find $u(.,t)\in H^1(\Omega)$ such that
 \begin{align}\label{2.1}
-	\qquad\left\langle \frac{\partial u}{\partial t}, v \right\rangle+a\left(u, v\right)=\left\langle F, v \right\rangle,\; \forall v\in H^1(\Omega),
-\end{align}
-and 
+	\left\langle \frac{\partial u}{\partial t}, v \right\rangle+a\left(u, v\right)=\left\langle F, v \right\rangle,\; \forall v\in H^1(\Omega),
+\end{align} 
 \begin{align}\label{2.2}
-	\qquad\qquad\qquad u(x, 0)=u_0(x), \; x\in \Omega,
+	u(x, 0)=u_0(x), \; x\in \Omega,
 \end{align}
 where 
 $$a\left(u, v\right)=\int_{\Omega}\left[\sum_{i, j=1}^{d}a_{ji}\frac{\partial u}{\partial x_i}\frac{\partial v}{\partial x_j}+a_0uv\right]dx,$$
 $$\left\langle \varphi, v \right\rangle=\int_{\Omega}\varphi vdx.$$
-
+Now we present a fully discrete finite element approximation for the variational problem \eqref{2.1} by the Crank-Nicolson method as follows:
+\\
 For \textit{spatial approximation}, let $\mathcal{T}_h$ be a triangulation of $\Omega$ and define a piecewise linear finite element space $V_h \subset H^1(\Omega)$ by
 $$V_h=\left\{v_h:v_h\in C(\overline{\Omega}), v_h|_K\in P_1(K), \forall K\in \mathcal{T}_h\right\},$$
 where $P_1(K)$ is a continuous piecewise linear polynomial on the element $K$. 
-
+\\
 For \textit{temporal discretization}, discrete $[0, T]$ uniformly into $M$ steps, $t_n=n\Delta t,\, n=0, 1, \dots, M$ with the time step size $\Delta t = T/M$. We define a function $\varphi(x, t)$ and $\varphi(x, t_n)=\varphi^n(x)$.
-
-Now we present a fully discrete finite element approximation for the variational problem \eqref{2.1} by the Crank-Nicolson method as follows: Find $u^n_h\in V_h$ for $n=1, 2, \dots, M$ such that
+\\
+Find $u^n_h\in V_h$ for $n=1, 2, \dots, M$ such that
 \begin{align}\label{2.3}
 	\langle d_tu^n_h, v_h \rangle+a\left(\frac{u^n_h+u^{n-1}_h}{2}, v_h\right)=\left\langle \frac{F^n+F^{n-1}}{2}, v_h \right\rangle,
 \end{align}
 and the initial condition 
 \begin{align}\label{2.4}
-	\qquad\qquad\qquad\qquad\qquad\quad u^0_h=u_0,
+	u^0_h=u_0,
 \end{align}
 where $v_h\in V_h$ and $d_tu^n_h=\frac{u^n_h-u^{n-1}_h}{\Delta t}, \; n=1, 2, ..., M.$
 
 The discrete variational problem \eqref{2.3} admits a unique solution $u^n_h\in V_h$, see \eqref{}. Let $u_h(x, t)$ be the linear interpolation of $u_h^n$ with respect to $t$. 
 For $x\in \Omega,\, t\in [t_{n-1}, t_n]$, we have
 \begin{align*}
-	\qquad\quad u_h(x, t)=\frac{t-t_{n-1}}{\Delta t}u_h^{n-1}+\frac{t_n-t}{\Delta t}u_h^{n}.
+	u_h(x, t)=\frac{t-t_{n-1}}{\Delta t}u_h^{n-1}+\frac{t_n-t}{\Delta t}u_h^{n}.
 \end{align*}
 \begin{dl}\label{dl2.1}
 	Let $u(x, t)$ be the solution of variational problem \eqref{2.1} - \eqref{2.2} and $u^n_h\in V_h$ for $n=1, 2, \dots, M$ be the solution for \eqref{2.3}. Then there holds the error estimate, see \eqref{}
 	\begin{align}\label{2.5}
-		\qquad\qquad\quad\left\|u_h-u\right\|_{L^2(Q)}=O\left(h^2+\Delta t^2\right),
+		\left\|u_h-u\right\|_{L^2(Q)}=O\left(h^2+\Delta t^2\right),
 	\end{align}
 	where $h$ is the mesh size.
 \end{dl}
@@ -124,18 +113,18 @@ We suppose that $F, f, g \in L^2(Q)$ and $ q\in L^\infty(Q)$ and hope to recover
 $$u(f)=\omega(x, t).$$ 
 We need to minimize the Tikhonov functional
 \begin{align}\label{2.6}
-	\quad\;\; J_{\gamma}(f)=\frac{1}{2}\left\|u(f)-\omega\right\|_{L^2(Q)}^2+\frac{\gamma}{2}\left\|f-f^*\right\|_{L^2(Q)}^2,
+	J_{\gamma}(f)=\frac{1}{2}\left\|u(f)-\omega\right\|_{L^2(Q)}^2+\frac{\gamma}{2}\left\|f-f^*\right\|_{L^2(Q)}^2,
 \end{align}
 where $\gamma>0$ being a regularization parameter, $f^*$ is an a prior estimation of $f$.
 We will prove that $J_\gamma$ is Frechet differentiable and drive a formula for its gradient.
 \begin{dl}
 	The functional $J_\gamma$ is Frechet differentiable and its gradient $\nabla J_\gamma$ at $f$ has the form 
 	\begin{align}\label{2.7}
-		\qquad \nabla J_\gamma(f)=q(x, t)p(x, t)+\gamma \left(f(x, t)-f^*(x, t)\right),
+		\nabla J_\gamma(f)=q(x, t)p(x, t)+\gamma \left(f(x, t)-f^*(x, t)\right),
 	\end{align}
 	where $p$(x, t) is the solution of the adjoint problem
-	\begin{align}\label{2.5} 
-		\quad\begin{cases}
+	\begin{align}\label{2.8} 
+		\begin{cases}
 		-\frac{\partial p(x, t)}{\partial t}+\mathcal{L}p(x, t)=u(f)-\omega, & (x, t)\in Q,\\
 		u(x, t)=0, & (x, t)\in S\\
 		p(x, T)=0, & x\in \Omega.
@@ -146,7 +135,7 @@ We will prove that $J_\gamma$ is Frechet differentiable and drive a formula for 
 $$f^{k+1}=f^k+\alpha_kd^k,$$
 with
 \begin{align*}
-	\qquad\qquad\quad d^k&=\left\{\begin{array}{ll}
+	d^k&=\left\{\begin{array}{ll}
 	-\nabla J_\gamma(f^k),& k=0,\\
 	-\nabla J_\gamma(f^k)+\beta_kd^{k-1},& k>0,
 	\end{array}\right.\\\\
@@ -158,7 +147,7 @@ To identify $\alpha_k$, we consider two problems
 \begin{bt}\label{bt2.1}
 	Denote the solution of this problem is $u[f]$
 	\begin{align*}
-		\quad\begin{cases}
+		\begin{cases}
 			\frac{\partial u(x, t)}{\partial t}+\mathcal{L}u(x, t)=f(x, t)q(x, t),&(x, t)\in Q,\\
 			u(x, t)=0, & (x, t)\in S,\\
 			u(x, 0)=0,&x\in \Omega.
@@ -168,7 +157,7 @@ To identify $\alpha_k$, we consider two problems
 \begin{bt}\label{bt2.2}
 	Denote the solution of this problem is $u(u_0, u_D)$
 	\begin{align*}
-		\quad\begin{cases}
+		\begin{cases}
 			\frac{\partial u(x, t)}{\partial t}+\mathcal{L}u(x, t)=g(x, t),&(x, t)\in Q,\\
 			u(x, t)=u_D(x, t), & (x, t)\in S,\\
 			u(x, 0)=u_0(x),&x\in \Omega.
@@ -247,60 +236,7 @@ with $\hat{\omega}_h^\delta=\omega^\delta- u_h(u_0, u_D)$.
 % --------------------------------------------------------------------
 \section{Tests and discussion}
 % --------------------------------------------------------------------
-\subsection{Error evaluation with exact solution}
-We study a numerical experiment with the exact solution of heat equation and evaluate the error convergence. Consider a square $[0,1]\times[0,1]$. Find $u(x,y,t)$ satisfy
-\begin{equation}
-\dfrac{\partial u}{\partial t} - \left(\dfrac{\partial^2 u}{\partial x^2} + \dfrac{\partial^2u}{\partial y^2}\right) = (1+2t)\sin(\pi x) \sin(\pi y)
-\end{equation}
-with the initial and boundary conditions
-$$
-u(x,y,0) = 0 \quad \text{and} \quad u|_\Gamma = 0.
-$$
-The exact solution is
-$$
-u = \sin(\pi x) \sin(\pi y) t,
-$$
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=4cm]{direct}
-\end{figure}
-Different cases of mesh size and time step length were studied to show the dependent of error on the mesh smoothness. We also use two different schemes
-\begin{itemize}
-	\item Backward Euler scheme
-	\begin{figure}[h!]
-		\centering
-		\includegraphics[width=4cm]{graph}
-	\end{figure}
-	\item Crank-Nicolson scheme
-\end{itemize}
-The approximate solution at final time is illustrated below.
-\subsection{A problem of thermal engineering}
-In the aspect of thermal engineering, the simulations of heat transfer attend in several applications. In [...] the author mentioned a realistic heat problem which can be solve by simulating the heat transfer process.\\
-Assuming there are two types of material with different thermal conductivity and price. We would like to build a thermal resistance wall from composite plate of the two materials that provide optimal thermal resistance properties and satisfies economical conditions. Let $V$ is the total volume of the plate, $V_e$ and $V_c$ are the volume of expensive and cheap material respectively, then the ratio
-$$
-\mu = \dfrac{V_e}{V} = \dfrac{V_e}{V_c + V_e}
-$$
-is fixed. Consider a rectangular room $\Omega_r$ has the size $L_x \times L_y$. At the center of the left wall located a radiator that keep the local temperature at $T_r$, denote as $\Gamma_r$, otherwise as $\Gamma_\alpha$. The thermal flux through the walls is expected to be zero, equivalent to the Neumann boundary condition
-$$
-\dfrac{\partial u}{\partial n} = 0 \quad \text{on} \quad \Gamma_\alpha.
-$$
-The right corner of the room is where we place our composite thermal resistance plate. Let $\l_x$ is the width of the plate. The right wall is consider the heat source and gain the Dirichlet boundary condition
-$$
-u = u_{ext} \quad \text{on} \quad \Gamma_{ext}.
-$$
-Finally, let $\kappa_a, \kappa_c$ and $\kappa_e$ is correspondingly the thermal conductivity coefficient of air, our cheap and expensive material. Based on our goal of minimizing the temperature inside the room, the cost function can be formulated as follow
-$$
-J = \dfrac{1}{|\Omega_a|}\int_{0}^{T} \int_{\Omega_a} u dx 
-$$
-This problem belong to the set of shape optimization problems or more generally is an inverse heat problem. These kinds of problems take part in large amount of engineering applications. An approach is to solve as much acceptable input cases as possible then determine which one is the optimal solution. This way requires numerous computations.
-\subsection{Numerical experiment of inverse heat problem}
-FreeFem++ provide an efficient tool to handle inverse problems for partial differential equations by using the C++ optimization module IPOPT. To be more accurate, the module support multiple languages in solving optimization problems. The application of IPOPT for solving inverse heat problem is shown below.\\
-To use the IPOPT module we have to add command\\
-load "ipopt"\\
-We need to find the expression of objective function $J$ and its gradient $\nabla J$ respective with the input control function $f$. The optimal $f$ is achieved via IPOPT loop using a conjugate gradient method solver such as Newton-Raphson method.\\
-J and gradJ\\
-This is an illustrating of the expected control $f$ and its approximation using IPOPT. 
-
+\input{result}
 
 
 % --------------------------------------------------------------------
@@ -314,5 +250,5 @@ This is an illustrating of the expected control $f$ and its approximation using 
 \bibliographystyle{plain}
 \bibliography{references}{}
 \vfill
-\end{multicols}
+
 \end{document}

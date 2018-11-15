@@ -1,31 +1,13 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.10.22)  16 NOV 2018 01:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.10.22)  16 NOV 2018 02:49
 entering extended mode
 **./seatuc2019.tex
 (seatuc2019.tex
 LaTeX2e <2017-04-15>
 Babel <3.18> and hyphenation patterns for 75 language(s) loaded.
-(icmfarticle.cls
-Document Class: icmfarticle 1996/10/08 v1.0 Non Standard LaTeX document class
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\fleqn.clo"
-File: fleqn.clo 2016/12/29 v1.2a Standard LaTeX option (flush left equations)
-\mathindent=\dimen102
-Applying: [2015/01/01] Make \[ robust on input line 50.
-LaTeX Info: Redefining \[ on input line 51.
-Already applied: [0000/00/00] Make \[ robust on input line 62.
-Applying: [2015/01/01] Make \] robust on input line 74.
-LaTeX Info: Redefining \] on input line 75.
-Already applied: [0000/00/00] Make \] robust on input line 83.
-)
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\extsizes\size9.clo"
-File: size9.clo 1999/11/11 v1.4a NON-Standard LaTeX file (size option)
-) ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\exscale.sty"
-Package: exscale 2014/09/29 v2.1h Standard LaTeX package exscale
-LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 57.
-LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
-(Font)                  OMX/cmex/m/n --> OMX/cmex/m/n on input line 57.
-LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
-(Font)                  OMX/cmex/m/n --> OMX/cmex/m/n on input line 57.
-\big@size=\dimen103
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\article.cls"
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\size10.clo"
+File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@section=\count80
@@ -37,15 +19,9 @@ LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
 \c@table=\count86
 \abovecaptionskip=\skip41
 \belowcaptionskip=\skip42
-\bibindent=\dimen104
-) (icmfstyle.tex
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\fontenc.sty"
-Package: fontenc 2017/04/05 v2.0i Standard LaTeX package
-
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\t1enc.def"
-File: t1enc.def 2017/04/05 v2.0i Standard LaTeX file
-LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
-))
+\bibindent=\dimen102
+)
+(packages_and_definitions.tex
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty
 "
 Package: amsmath 2017/09/02 v2.17a AMS math features
@@ -59,11 +35,11 @@ Package: amstext 2000/06/29 v2.01 AMS text
 "
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks14
-\ex@=\dimen105
+\ex@=\dimen103
 ))
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty"
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen106
+\pmbraise@=\dimen104
 ) ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsmath\amsopn.st
 y"
 Package: amsopn 2016/03/08 v2.02 operator names
@@ -80,7 +56,7 @@ LaTeX Info: Redefining \dots on input line 475.
 LaTeX Info: Redefining \cdots on input line 596.
 \Mathstrutbox@=\box26
 \strutbox@=\box27
-\big@size=\dimen107
+\big@size=\dimen105
 LaTeX Font Info:    Redeclaring font encoding OML on input line 712.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
 \macc@depth=\count92
@@ -93,12 +69,12 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
 \column@=\count97
 \maxfields@=\count98
 \andhelp@=\toks16
-\eqnshift@=\dimen108
-\alignsep@=\dimen109
-\tagshift@=\dimen110
-\tagwidth@=\dimen111
-\totwidth@=\dimen112
-\lineht@=\dimen113
+\eqnshift@=\dimen106
+\alignsep@=\dimen107
+\tagshift@=\dimen108
+\tagwidth@=\dimen109
+\totwidth@=\dimen110
+\lineht@=\dimen111
 \@envbody=\toks17
 \multlinegap=\skip44
 \multlinetaggap=\skip45
@@ -106,27 +82,43 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
 LaTeX Info: Redefining \[ on input line 2817.
 LaTeX Info: Redefining \] on input line 2818.
 )
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\fancyhdr\fancyhdr.s
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\amssymb.st
+y"
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.s
 ty"
-Package: fancyhdr 2017/06/30 v3.9a Extensive control of page headers and footer
-s
-\f@nch@headwidth=\skip46
-\f@nch@O@elh=\skip47
-\f@nch@O@erh=\skip48
-\f@nch@O@olh=\skip49
-\f@nch@O@orh=\skip50
-\f@nch@O@elf=\skip51
-\f@nch@O@erf=\skip52
-\f@nch@O@olf=\skip53
-\f@nch@O@orf=\skip54
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amscls\amsthm.sty"
+Package: amsthm 2017/10/31 v2.20.4
+\thm@style=\toks19
+\thm@bodyfont=\toks20
+\thm@headfont=\toks21
+\thm@notefont=\toks22
+\thm@headpunct=\toks23
+\thm@preskip=\skip46
+\thm@postskip=\skip47
+\thm@headsep=\skip48
+\dth@everypar=\toks24
+) ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\color.st
+y"
+Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
+
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics-cfg\color.
+cfg"
+File: color.cfg 2016/01/02 v1.6 sample color configuration
 )
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\tools\indentfirst.s
-ty"
-Package: indentfirst 1995/11/23 v1.03 Indent first paragraph (DPC)
-)
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\times.sty"
-Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
-)
+Package color Info: Driver file: pdftex.def on input line 147.
+
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics-def\pdftex
+.def"
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\graphicx.s
 ty"
 Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
@@ -134,7 +126,7 @@ Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\keyval.sty
 "
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
-\KV@toks@=\toks19
+\KV@toks@=\toks25
 )
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\graphics.s
 ty"
@@ -148,87 +140,13 @@ cs.cfg"
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 99.
-
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics-def\pdftex
-.def"
-File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
-))
-\Gin@req@height=\dimen114
-\Gin@req@width=\dimen115
 )
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\tools\multicol.sty"
-Package: multicol 2017/04/11 v1.8q multicolumn formatting (FMi)
-\c@tracingmulticols=\count99
-\mult@box=\box28
-\multicol@leftmargin=\dimen116
-\c@unbalance=\count100
-\c@collectmore=\count101
-\doublecol@number=\count102
-\multicoltolerance=\count103
-\multicolpretolerance=\count104
-\full@width=\dimen117
-\page@free=\dimen118
-\premulticols=\dimen119
-\postmulticols=\dimen120
-\multicolsep=\skip55
-\multicolbaselineskip=\skip56
-\partial@page=\box29
-\last@line=\box30
-\maxbalancingoverflow=\dimen121
-\mult@rightbox=\box31
-\mult@grightbox=\box32
-\mult@gfirstbox=\box33
-\mult@firstbox=\box34
-\@tempa=\box35
-\@tempa=\box36
-\@tempa=\box37
-\@tempa=\box38
-\@tempa=\box39
-\@tempa=\box40
-\@tempa=\box41
-\@tempa=\box42
-\@tempa=\box43
-\@tempa=\box44
-\@tempa=\box45
-\@tempa=\box46
-\@tempa=\box47
-\@tempa=\box48
-\@tempa=\box49
-\@tempa=\box50
-\@tempa=\box51
-\c@columnbadness=\count105
-\c@finalcolumnbadness=\count106
-\last@try=\dimen122
-\multicolovershoot=\dimen123
-\multicolundershoot=\dimen124
-\mult@nat@firstbox=\box52
-\colbreak@box=\box53
-\mc@col@check@num=\count107
-) ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ltxmisc\here.sty"
-)) (packages_and_definitions.tex
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\latexsym.sty"
-Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
-\symlasy=\mathgroup4
-LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
-(Font)                  U/lasy/m/n --> U/lasy/b/n on input line 52.
+\Gin@req@height=\dimen112
+\Gin@req@width=\dimen113
 )
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\jknappen\mathrsfs.s
-ty"
-Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
-\symrsfs=\mathgroup5
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\cases\cases.sty"
+Package: cases 2002/05/02 ver 2.5 
 )
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\amssymb.st
-y"
-Package: amssymb 2013/01/14 v3.01 AMS font symbols
-
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.s
-ty"
-Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
-\symAMSa=\mathgroup6
-\symAMSb=\mathgroup7
-LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
-(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
-))
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\hyperref\hyperref.s
 ty"
 Package: hyperref 2018/02/06 v6.86b Hypertext links for LaTeX
@@ -291,15 +209,15 @@ Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
 sty"
 Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 )
-\@linkdim=\dimen125
-\Hy@linkcounter=\count108
-\Hy@pagecounter=\count109
+\@linkdim=\dimen114
+\Hy@linkcounter=\count99
+\Hy@pagecounter=\count100
 
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\hyperref\pd1enc.def
 "
 File: pd1enc.def 2018/02/06 v6.86b Hyperref: PDFDocEncoding definition (HO)
 )
-\Hy@SavedSpaceFactor=\count110
+\Hy@SavedSpaceFactor=\count101
 
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\00miktex\hyperref.c
 fg"
@@ -312,16 +230,16 @@ Package hyperref Info: Plain pages OFF on input line 4524.
 Package hyperref Info: Backreferencing OFF on input line 4529.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4762.
-\c@Hy@tempcnt=\count111
+\c@Hy@tempcnt=\count102
  ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\url\url.sty"
 \Urlmuskip=\muskip11
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5115.
-\XeTeXLinkMargin=\dimen126
-\Fld@menulength=\count112
-\Field@Width=\dimen127
-\Fld@charsize=\dimen128
+\XeTeXLinkMargin=\dimen115
+\Fld@menulength=\count103
+\Field@Width=\dimen116
+\Fld@charsize=\dimen117
 Package hyperref Info: Hyper figures OFF on input line 6369.
 Package hyperref Info: Link nesting OFF on input line 6374.
 Package hyperref Info: Hyper index ON on input line 6377.
@@ -331,17 +249,17 @@ Package hyperref Info: Link coloring with OCG OFF on input line 6394.
 Package hyperref Info: PDF/A mode OFF on input line 6399.
 LaTeX Info: Redefining \ref on input line 6439.
 LaTeX Info: Redefining \pageref on input line 6443.
-\Hy@abspage=\count113
-\c@Item=\count114
-\c@Hfootnote=\count115
+\Hy@abspage=\count104
+\c@Item=\count105
+\c@Hfootnote=\count106
 )
 Package hyperref Info: Driver (autodetected): hpdftex.
 
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\hyperref\hpdftex.de
 f"
 File: hpdftex.def 2018/02/06 v6.86b Hyperref driver for pdfTeX
-\Fld@listcount=\count116
-\c@bookmark@seq@number=\count117
+\Fld@listcount=\count107
+\c@bookmark@seq@number=\count108
 
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\oberdiek\rerunfilec
 heck.sty"
@@ -349,22 +267,100 @@ Package: rerunfilecheck 2016/05/16 v1.8 Rerun checks for auxiliary files (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 82.
 )
-\Hy@SectionHShift=\skip57
+\Hy@SectionHShift=\skip49
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 24.
-Package hyperref Info: Option `breaklinks' set `true' on input line 24.
+Package hyperref Info: Option `colorlinks' set `true' on input line 11.
 
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amscls\amsthm.sty"
-Package: amsthm 2017/10/31 v2.20.4
-\thm@style=\toks20
-\thm@bodyfont=\toks21
-\thm@headfont=\toks22
-\thm@notefont=\toks23
-\thm@headpunct=\toks24
-\thm@preskip=\skip58
-\thm@postskip=\skip59
-\thm@headsep=\skip60
-\dth@everypar=\toks25
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\tools\array.sty"
+Package: array 2016/10/06 v2.4d Tabular extension package (FMi)
+\col@sep=\dimen118
+\extrarowheight=\dimen119
+\NC@list=\toks26
+\extratabsurround=\skip50
+\backup@length=\skip51
+)
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\multirow\multirow.s
+ty"
+Package: multirow 2016/11/25 v2.2 Span multiple rows of a table
+\multirow@colwidth=\skip52
+\multirow@cntb=\count109
+\multirow@dima=\skip53
+\bigstrutjot=\dimen120
+)
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\booktabs\booktabs.s
+ty"
+Package: booktabs 2005/04/14 v1.61803 publication quality tables
+\heavyrulewidth=\dimen121
+\lightrulewidth=\dimen122
+\cmidrulewidth=\dimen123
+\belowrulesep=\dimen124
+\belowbottomsep=\dimen125
+\aboverulesep=\dimen126
+\abovetopsep=\dimen127
+\cmidrulesep=\dimen128
+\cmidrulekern=\dimen129
+\defaultaddspace=\dimen130
+\@cmidla=\count110
+\@cmidlb=\count111
+\@aboverulesep=\dimen131
+\@belowrulesep=\dimen132
+\@thisruleclass=\count112
+\@lastruleclass=\count113
+\@thisrulewidth=\dimen133
+)
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\caption\caption.sty
+"
+Package: caption 2018/10/06 v3.3-154 Customizing captions (AR)
+
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\caption\caption3.st
+y"
+Package: caption3 2018/09/12 v1.8c caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 64.
+\captionmargin=\dimen134
+\captionmargin@=\dimen135
+\captionwidth=\dimen136
+\caption@tempdima=\dimen137
+\caption@indent=\dimen138
+\caption@parindent=\dimen139
+\caption@hangindent=\dimen140
+)
+\c@caption@flags=\count114
+\c@ContinuedFloat=\count115
+Package caption Info: hyperref package is loaded.
+)
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\caption\subcaption.
+sty"
+Package: subcaption 2018/05/01 v1.1-162 Sub-captions (AR)
+\c@subfigure=\count116
+\c@subtable=\count117
+)
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ms\ragged2e.sty"
+Package: ragged2e 2009/05/21 v2.1 ragged2e Package (MS)
+
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\ms\everysel.sty"
+Package: everysel 2011/10/28 v1.2 EverySelectfont Package (MS)
+)
+\CenteringLeftskip=\skip54
+\RaggedLeftLeftskip=\skip55
+\RaggedRightLeftskip=\skip56
+\CenteringRightskip=\skip57
+\RaggedLeftRightskip=\skip58
+\RaggedRightRightskip=\skip59
+\CenteringParfillskip=\skip60
+\RaggedLeftParfillskip=\skip61
+\RaggedRightParfillskip=\skip62
+\JustifyingParfillskip=\skip63
+\CenteringParindent=\skip64
+\RaggedLeftParindent=\skip65
+\RaggedRightParindent=\skip66
+\JustifyingParindent=\skip67
+)
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\titling\titling.sty
+"
+Package: titling 2009/09/04 v2.1d maketitle typesetting
+\thanksmarkwidth=\skip68
+\thanksmargin=\skip69
+\droptitle=\skip70
 )
 \c@dl=\count118
 \c@md=\count119
@@ -390,48 +386,38 @@ LaTeX Info: Redefining \Cpagerefrange on input line 2370.
 LaTeX Info: Redefining \labelcref on input line 2370.
 LaTeX Info: Redefining \labelcpageref on input line 2370.
 Package cleveref Info: `amsthm' support loaded on input line 3026.
-)) (seatuc2019.aux
-
-LaTeX Warning: Label `2.5' multiply defined.
-
-
-LaTeX Warning: Label `2.5@cref' multiply defined.
-
-)
+)) (seatuc2019.aux)
 \openout1 = `seatuc2019.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 24.
-LaTeX Font Info:    ... okay on input line 24.
-LaTeX Font Info:    Try loading font information for T1+ptm on input line 24.
- ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\t1ptm.fd"
-File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
-)
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 20.
+LaTeX Font Info:    ... okay on input line 20.
+
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\context\base\supp-pdf.mki
 i"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count126
-\scratchdimen=\dimen129
-\scratchbox=\box54
+\scratchdimen=\dimen141
+\scratchbox=\box28
 \nofMPsegments=\count127
 \nofMParguments=\count128
-\everyMPshowfont=\toks26
+\everyMPshowfont=\toks27
 \MPscratchCnt=\count129
-\MPscratchDim=\dimen130
+\MPscratchDim=\dimen142
 \MPnumerator=\count130
 \makeMPintoPDFobject=\count131
-\everyMPtoPDFconversion=\toks27
+\everyMPtoPDFconversion=\toks28
 )
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-b
 ase.sty"
@@ -448,18 +434,8 @@ Package grfext Info: Graphics extension search list:
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
-\AtBeginShipoutBox=\box55
-
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics\color.sty"
-Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
-
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\graphics-cfg\color.
-cfg"
-File: color.cfg 2016/01/02 v1.6 sample color configuration
-)
-Package color Info: Driver file: pdftex.def on input line 147.
-)
-Package hyperref Info: Link coloring ON on input line 24.
+\AtBeginShipoutBox=\box29
+Package hyperref Info: Link coloring ON on input line 20.
 
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\hyperref\nameref.st
 y"
@@ -471,161 +447,154 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count132
 )
-LaTeX Info: Redefining \ref on input line 24.
-LaTeX Info: Redefining \pageref on input line 24.
-LaTeX Info: Redefining \nameref on input line 24.
+LaTeX Info: Redefining \ref on input line 20.
+LaTeX Info: Redefining \pageref on input line 20.
+LaTeX Info: Redefining \nameref on input line 20.
  (seatuc2019.out) (seatuc2019.out)
 \@outlinefile=\write3
 \openout3 = `seatuc2019.out'.
 
-LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 29.
-LaTeX Font Info:    Try loading font information for U+lasy on input line 29.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
 
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\ulasy.fd"
-File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
-)
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 29.
+ABD: EverySelectfont initializing macros
+LaTeX Info: Redefining \selectfont on input line 20.
+LaTeX Font Info:    Try loading font information for U+msa on input line 33.
 
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\jknappen\ursfs.fd"
-File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
-)
-LaTeX Font Info:    Try loading font information for U+msa on input line 29.
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 29.
+LaTeX Font Info:    Try loading font information for U+msb on input line 33.
 
 ("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 29.
-LaTeX Font Info:    Font shape `T1/ptm/bx/it' in size <9> not available
-(Font)              Font shape `T1/ptm/b/it' tried instead on input line 71.
-
-
-LaTeX Warning: Reference `' on page 1 undefined on input line 106.
-
-
-LaTeX Warning: Reference `' on page 1 undefined on input line 112.
-
-LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 124.
-[1{C:/Users/nhan/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
-
-]
-
-LaTeX Warning: Reference `' on page 2 undefined on input line 178.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 186--188
-
+Underfull \hbox (badness 10000) in paragraph at lines 33--33
+ \OT1/cmr/m/it/10 Key-words: In-verse source prob-lems, least squares method, T
+ikhonov reg-
  []
 
 
-Overfull \hbox (12.41162pt too wide) detected at line 223
+Underfull \hbox (badness 10000) in paragraph at lines 33--33
+\OT1/cmr/m/it/10 u-lar-iza-tion, space-time fi-nite el-e-ment method, con-ju-ga
+te gra-di-ent method
+ []
+
+[1{C:/Users/nhan/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}
+
+
+]
+Overfull \hbox (3.03154pt too wide) detected at line 88
 []
  []
 
+
+LaTeX Warning: Reference `' on page 2 undefined on input line 95.
+
+
+LaTeX Warning: Reference `' on page 2 undefined on input line 101.
+
+
+LaTeX Warning: Reference `' on page 2 undefined on input line 167.
+
 [2]
+Underfull \hbox (badness 10000) in paragraph at lines 175--177
 
-LaTeX Warning: Reference `3.1' on page 3 undefined on input line 233.
+ []
 
 
-LaTeX Warning: Reference `3.1' on page 3 undefined on input line 240.
+Overfull \hbox (10.73407pt too wide) detected at line 204
+\OML/cmm/m/it/10 J[]\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 f\OT1/cmr/m/n/10 ) = [] [
+][] + [] [][] \OMS/cmsy/m/n/10 ! [] \OML/cmm/m/it/10 :
+ []
 
-<direct.png, id=101, 554.07pt x 549.05125pt>
+
+Overfull \hbox (31.8606pt too wide) detected at line 212
+[]
+ []
+
+
+LaTeX Warning: Reference `3.1' on page 3 undefined on input line 222.
+
+
+LaTeX Warning: Reference `3.1' on page 3 undefined on input line 229.
+
+(result.tex
+<direct.png, id=96, 554.07pt x 549.05125pt>
 File: direct.png Graphic file (type png)
 <use direct.png>
-Package pdftex.def Info: direct.png  used on input line 265.
-(pdftex.def)             Requested size: 113.81102pt x 112.77405pt.
-
-Package multicol Warning: Floats and marginpars not allowed inside `multicols' 
-environment!.
+Package pdftex.def Info: direct.png  used on input line 16.
+(pdftex.def)             Requested size: 233.31259pt x 231.19478pt.
 
 
-Package multicol Warning: Floats and marginpars not allowed inside `multicols' 
-environment!.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 269.
-
-("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
-File: omsptm.fd 
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 20.
+("C:\Users\nhan\AppData\Local\Programs\MiKTeX 2.9\tex\latex\base\omscmr.fd"
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 269.
-<graph.png, id=103, 467.7475pt x 276.03125pt>
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 20.
+<graph.png, id=98, 467.7475pt x 276.03125pt>
 File: graph.png Graphic file (type png)
 <use graph.png>
-Package pdftex.def Info: graph.png  used on input line 272.
-(pdftex.def)             Requested size: 113.81102pt x 67.16283pt.
+Package pdftex.def Info: graph.png  used on input line 23.
+(pdftex.def)             Requested size: 233.31259pt x 137.68675pt.
 
 
-Package multicol Warning: Floats and marginpars not allowed inside `multicols' 
-environment!.
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
+[3]
 
-Package multicol Warning: Floats and marginpars not allowed inside `multicols' 
-environment!.
+LaTeX Warning: Command \l invalid in math mode on input line 38.
 
-
-LaTeX Warning: Command \l invalid in math mode on input line 287.
-
-Missing character: There is no ª in font cmr9!
-(seatuc2019.bbl
+) (seatuc2019.bbl
 
 LaTeX Warning: Empty `thebibliography' environment on input line 3.
 
 )
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 318.
- [3]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 318.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 254.
+ [4 <./direct.png> <./graph.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 254.
  (seatuc2019.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 318.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 318.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 254.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 254.
 Package rerunfilecheck Info: File `seatuc2019.out' has not changed.
 (rerunfilecheck)             Checksum: 4FB1C8F8B58E551210AD999284D67D32;593.
 
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: There were multiply-defined labels.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 318.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 254.
  ) 
 Here is how much of TeX's memory you used:
- 8635 strings out of 493305
- 142049 string characters out of 3130236
- 268821 words of memory out of 3000000
- 12016 multiletter control sequences out of 15000+200000
- 36605 words of font info for 63 fonts, out of 3000000 for 9000
+ 9496 strings out of 493305
+ 157796 string characters out of 3130236
+ 266208 words of memory out of 3000000
+ 12899 multiletter control sequences out of 15000+200000
+ 12515 words of font info for 48 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 30i,14n,43p,650b,496s stack positions out of 5000i,500n,10000p,200000b,50000s
-{C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc}
-<C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
-extra/cmex9.pfb><C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/pu
-blic/amsfonts/cm/cmmi5.pfb><C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fon
-ts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Users/nhan/AppData/Local/Programs/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Users/nhan/AppData/Local/P
-rograms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Users/nhan/AppDa
-ta/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Users/
-nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb>
-<C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
-/cmsy6.pfb><C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/
-amsfonts/cm/cmsy9.pfb><C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/ty
-pe1/public/amsfonts/symbols/msam10.pfb><C:/Users/nhan/AppData/Local/Programs/Mi
-KTeX 2.9/fonts/type1/public/amsfonts/symbols/msam7.pfb><C:/Users/nhan/AppData/L
-ocal/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/Use
-rs/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/
-Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmbi8a.pfb>
-<C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.p
-fb><C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/urw/times/utmri
-8a.pfb>
-Output written on seatuc2019.pdf (3 pages, 208291 bytes).
+ 38i,14n,38p,650b,371s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/
+cm/cmbx10.pfb><C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/cm/cmbx12.pfb><C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmbxti10.pfb><C:/Users/nhan/AppData/Local/Programs/M
+iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Users/nhan/AppData/Loca
+l/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/nhan/
+AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/
+Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmm
+i7.pfb><C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsf
+onts/cm/cmr10.pfb><C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmr5.pfb><C:/Users/nhan/AppData/Local/Programs/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/nhan/AppData/Local/Programs/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/nhan/AppData/Local/
+Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/nhan/App
+Data/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Us
+ers/nhan/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/
+msbm10.pfb>
+Output written on seatuc2019.pdf (4 pages, 316118 bytes).
 PDF statistics:
- 179 PDF objects out of 1000 (max. 8388607)
- 39 named destinations out of 1000 (max. 500000)
+ 178 PDF objects out of 1000 (max. 8388607)
+ 42 named destinations out of 1000 (max. 500000)
  83 words of extra memory for PDF output out of 10000 (max. 10000000)
 
