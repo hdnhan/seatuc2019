@@ -1,8 +1,8 @@
 load "msh3"
 load "medit"
 
-int nn = 8;
-int Nt = nn;
+int nn = 16;
+int Nt = 8;
 int Nx = nn, Ny = nn;
 int[int] labels = [1, 1, 1, 1];
 mesh Th = square(Nx, Ny, label = labels);
@@ -36,7 +36,8 @@ for(int nt = 1; nt <= Nt; nt++){
 			int2d(Th)(u * v / dt + 0.5 * grad(u)' * grad(v))
 			+ int2d(Th)(-uprev * v / dt + 0.5 * grad(uprev) '* grad(v))
 			- int2d(Th)(0.5 * (fprev + fnext) * v)
-			- int1d(Th, 1, 2, 3, 4)((dx(uprev) * N.x + dy(uprev) * N.y) * v);
+			+on(1, u = 0);
+			//- int1d(Th, 1, 2, 3, 4)((dx(uprev) * N.x + dy(uprev) * N.y) * v);
 
 	for(int ny = 0; ny <= Ny; ny++){
 		for(int nx = 0; nx <= Nx; nx++){

@@ -3,8 +3,8 @@
     1 : load "msh3"(load: loadLibary C:\Program Files (x86)\FreeFem++\\.\msh3 = 0)
     2 : load "medit"(load: loadLibary C:\Program Files (x86)\FreeFem++\\.\medit = 0)
     3 :
-    4 : int nn = 8;
-    5 : int Nt = nn;
+    4 : int nn = 16;
+    5 : int Nt = 8;
     6 : int Nx = nn, Ny = nn;
     7 : int[int] labels = [1, 1, 1, 1];
     8 : mesh Th = square(Nx, Ny, label = labels);
@@ -32,14 +32,14 @@
    30 :
    31 : for(int nt = 1; nt <= Nt; nt++){
    32 :
-   33 :         Vh unext = ue(x, y, nt * dt);
-   34 :         Vh fnext = fe(x, y, nt * dt);
-   35 :
-   36 :         solve CrankNicolson(u, v, solver = CG) =
-   37 :                         int2d(Th)(u * v / dt + 0.5 * grad(u)   [dx(u), dy(u)]' * grad(v)   [dx(v), dy(v)])
-   38 :                         + int2d(Th)(-uprev * v / dt + 0.5 * grad(uprev)   [dx(uprev), dy(uprev)] '* grad(v)   [d°;¦x(v), dy(v)])
-   39 :                         - int2d(Th)(0.5 * (fprev + fnext) * v)
-   40 :                         - int1d(Th, 1, 2, 3, 4)(dx(unext) * N.x * v + dy(unext) * N.y * v);
+   33 :         Vh fnext = fe(x, y, nt * dt);
+   34 :
+   35 :         solve CrankNicolson(u, v, solver = CG) =
+   36 :                         int2d(Th)(u * v / dt + 0.5 * grad(u)   [dx(u), dy(u)]' * grad(v)   [dx(v), dy(v)])
+   37 :                         + int2d(Th)(-uprev * v / dt + 0.5 * grad(uprev)   [dx(uprev), dy(uprev)] '* grad(v)   [dàæÖx(v), dy(v)])
+   38 :                         - int2d(Th)(0.5 * (fprev + fnext) * v)
+   39 :                         +on(1, u = 0);
+   40 :                         //- int1d(Th, 1, 2, 3, 4)((dx(uprev) * N.x + dy(uprev) * N.y) * v);
    41 :
    42 :         for(int ny = 0; ny <= Ny; ny++){
    43 :                 for(int nx = 0; nx <= Nx; nx++){
@@ -51,33 +51,33 @@
    49 :         uprev = u;
    50 : }
    51 :
-   52 : cout << "Erorr in L2: " << sqrt(int3d(Th3)((uu - ue) ^ 2)) << endl;  sizestack + 1024 =6064  ( 5040 )
+   52 : cout << "Erorr in L2: " << sqrt(int3d(Th3)((uu - ue) ^ 2)) << endl;  sizestack + 1024 =5240  ( 4216 )
  
-  -- Square mesh : nb vertices  =81 ,  nb triangles = 128 ,  nb boundary edges 32
+  -- Square mesh : nb vertices  =289 ,  nb triangles = 512 ,  nb boundary edges 64
   Enter: BuildCube: 6
     kind = 6 n tet Cube = 6 / n slip 6 70
-  Cube  nv=729 nt=3072 nbe=768
+  Cube  nv=2601 nt=12288 nbe=2048
   Out:  BuildCube
-  -- FESpace: Nb of Nodes 729 Nb of DoF 729
+  -- FESpace: Nb of Nodes 2601 Nb of DoF 2601
   -- Solve :
-          min -0.709213  max 1.07826
+          min -1.13341e-034  max 1.12189
   -- Solve :
-          min -0.514781  max 1.17911
+          min -1.26765e-034  max 1.27252
   -- Solve :
-          min -0.893654  max 1.27745
+          min -1.45136e-034  max 1.4418
   -- Solve :
-          min -0.84426  max 1.40317
+          min -1.63163e-034  max 1.6338
   -- Solve :
-          min -1.19737  max 1.53496
+          min -1.86029e-034  max 1.85133
   -- Solve :
-          min -1.24034  max 1.69129
+          min -2.09782e-034  max 2.09784
   -- Solve :
-          min -1.60473  max 1.86451
+          min -2.3863e-034  max 2.37716
   -- Solve :
-          min -1.73593  max 2.06237
-Erorr in L2: 0.385977
-times: compile 0.122s, execution 0.041s,  mpirank:0
- ######## We forget of deleting   131 Nb pointer,   0Bytes  ,  mpirank 0, memory leak =0
- CodeAlloc : nb ptr  3190,  size :396864 mpirank: 0
+          min -2.6957e-034  max 2.69368
+Erorr in L2: 0.00802546
+times: compile 0.118s, execution 0.096s,  mpirank:0
+ ######## We forget of deleting   116 Nb pointer,   0Bytes  ,  mpirank 0, memory leak =0
+ CodeAlloc : nb ptr  3148,  size :394528 mpirank: 0
 Ok: Normal End
- try getConsole D:\Study\HUST\FEM\Co Mai\seatuc\freefem++\crank-nicolson2D.edp
+ try getConsole D:\Study\HUST\FEM\Co Mai\seatuc2019\freefem++\crank-nicolson2D.edp

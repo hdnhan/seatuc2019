@@ -3,34 +3,26 @@
 \input{packages_and_definitions}
 
 \title{\bf Numerical simulation of heat transfer problem by Freefem++ software}
-\author{\normalsize\bf Mai Ta$^{1,2}$, Franck Pigeonneau and Pierre Saramito$^2$}
-\date{\normalsize\vspace{-2ex}\em
-$^1$~Surface du verre et interfaces, UMR 125 CNRS/Saint-Gobain\\
-39, quai Lucien Lefranc - BP 135, 93303 Aubervilliers cedex, France\\
-\href{mailto:Franck.Pigeonneau@saint-gobain.com}{Franck.Pigeonneau@saint-gobain.com},\\[1.1mm]
-%
-$^2$~Lab. J. Kuntzmann, CNRS and Grenoble university\\
-51, rue des math\'ematiques BP 53 - Domaine Universitaire, 38041 Grenoble Cedex 9, France \\
-\href{mailto:tathithanhmai@gmail.com}{tathithanhmai@gmail.com},
-\href{mailto:Pierre.Saramito@imag.fr}{Pierre.Saramito@imag.fr}
-}
-
+\author{Ta Thi Thanh Mai\thanks{email: abc}\and Ho Duc Nhan\thanks{email: abc}\and Tran Minh Tam\thanks{email: abc}}
+%\thanksmarkseries{arabic}
+\date{\footnotesize\textit{School of Applied Mathematics and Informatics, Hanoi University of Science and Technology, 1 Dai Co Viet street, Hai Ba Trung District, Hanoi, Vietnam}}
 \justifying
 % ---------------------------------------------
 \begin{document}
 \twocolumn[
-\begin{@twocolumnfalse}
-\maketitle
-\rule{\textwidth}{.1pt}
-Abstract\\
-\noindent
-...
-\\
-\vspace{1ex}
-\noindent {\em Keywords: Inverse source problems, least squares method, Tikhonov regularization, space-time finite element method, conjugate gradient method}
-\rule{\textwidth}{.1pt}
-\vspace{2mm}
-\end{@twocolumnfalse}]
+	\maketitle
+	\begin{@twocolumnfalse}
+		\rule{\textwidth}{.1pt}
+		\begin{abstract}
+			content...
+		\end{abstract}
+		\vspace{1ex}
+		\noindent \textit{Keywords: Inverse source problems, least squares method, Tikhonov regularization, conjugate gradient method.}
+		\rule{\textwidth}{.1pt}
+		\vspace{2mm}
+	\end{@twocolumnfalse}
+]
+\saythanks
 
 % --------------------------------------------------------------------
 \section{Introduction}
@@ -57,11 +49,12 @@ where
 \end{align*}
 with $\lambda_1$ and $\lambda_2$ are positive constants and $\mu_1\geq 0$.
 \\
-The problem is that to determine $u$ when all data $a_{ji},\,a_0,\,u_0,\,u_D$ and $F$ in \eqref{1.1} - \eqref{1.2} - \eqref{1.3} are given called \textbf{\textit{direct problem}}. But in practice, we miss one of the data above such as  the right hand side $F$ of \eqref{1.1} known for heat source. The problem identifying $F$ when some additional observations on the solution $u$ available called \textbf{\textit{inverse problem}}. We suppose that the heat source following the form $F(x, t)=f(x, t)q(x, t)+g(x, t)$, where $q(x, t),\, g(x, t)$ are given. Find $f(x, t)$ if $\omega(x, t)=u(x, t)$ is given on $Q$. 
+The problem is that to determine $u$ when all data $a_{ji},\,a_0,\,u_0,\,u_D$ and $F$ in \eqref{1.1} - \eqref{1.2} - \eqref{1.3} are given called \textbf{\textit{direct problem}}. 
+%But in practice, we miss one of the data above such as  the right hand side $F$ of \eqref{1.1} known for heat source. The problem identifying $F$ when some additional observations on the solution $u$ available called \textbf{\textit{inverse problem}}. We suppose that the heat source following the form $F(x, t)=f(x, t)q(x, t)+g(x, t)$, where $q(x, t),\, g(x, t)$ are given. Find $f(x, t)$ if $\omega(x, t)=u(x, t)$ is given on $Q$. 
 % --------------------------------------------------------------------
 \section{Numerical method} 
 % --------------------------------------------------------------------
-\subsection{Direct problem}
+\subsection{Variational problem}
 % --------------------------------------------------------------------
 
 Find $u(.,t)\in H^1(\Omega)$ such that
@@ -74,6 +67,7 @@ Find $u(.,t)\in H^1(\Omega)$ such that
 where 
 $$a\left(u, v\right)=\int_{\Omega}\left[\sum_{i, j=1}^{d}a_{ji}\frac{\partial u}{\partial x_i}\frac{\partial v}{\partial x_j}+a_0uv\right]dx,$$
 $$\left\langle \varphi, v \right\rangle=\int_{\Omega}\varphi vdx.$$
+\subsection{Finite element method}
 Now we present a fully discrete finite element approximation for the variational problem \eqref{2.1} by the Crank-Nicolson method as follows:
 \\
 For \textit{spatial approximation}, let $\mathcal{T}_h$ be a triangulation of $\Omega$ and define a piecewise linear finite element space $V_h \subset H^1(\Omega)$ by
@@ -84,13 +78,14 @@ For \textit{temporal discretization}, discrete $[0, T]$ uniformly into $M$ steps
 \\
 Find $u^n_h\in V_h$ for $n=1, 2, \dots, M$ such that
 \begin{align}\label{2.3}
-	\langle d_tu^n_h, v_h \rangle+a\left(\frac{u^n_h+u^{n-1}_h}{2}, v_h\right)=\left\langle \frac{F^n+F^{n-1}}{2}, v_h \right\rangle,
+	&\langle d_tu^n_h, v_h \rangle+a\left(\theta u^n_h+(1-\theta)u^{n-1}_h, v_h\right)\notag\\
+	&\qquad\quad=\left\langle \theta F^n+(1-\theta)F^{n-1}, v_h \right\rangle, \; \forall v_h\in V_h,
 \end{align}
 and the initial condition 
 \begin{align}\label{2.4}
 	u^0_h=u_0,
 \end{align}
-where $v_h\in V_h$ and $d_tu^n_h=\frac{u^n_h-u^{n-1}_h}{\Delta t}, \; n=1, 2, ..., M.$
+where $d_tu^n_h=\frac{u^n_h-u^{n-1}_h}{\Delta t}, \; n=1, 2, ..., M.$
 
 The discrete variational problem \eqref{2.3} admits a unique solution $u^n_h\in V_h$, see \eqref{}. Let $u_h(x, t)$ be the linear interpolation of $u_h^n$ with respect to $t$. 
 For $x\in \Omega,\, t\in [t_{n-1}, t_n]$, we have
@@ -105,132 +100,6 @@ For $x\in \Omega,\, t\in [t_{n-1}, t_n]$, we have
 	where $h$ is the mesh size.
 \end{dl}
 
-% --------------------------------------------------------------------
-\subsection{Inverse problem}
-% --------------------------------------------------------------------
-
-We suppose that $F, f, g \in L^2(Q)$ and $ q\in L^\infty(Q)$ and hope to recover $f(x, t)$ from the observation $\omega(x, t)$. Since the solution $u(x, t)$ depends on the function $f(x, t)$, so we denote it by $u(x, t, f)$ or $u(f)$. Identify $f(x, t)$ satisfying 
-$$u(f)=\omega(x, t).$$ 
-We need to minimize the Tikhonov functional
-\begin{align}\label{2.6}
-	J_{\gamma}(f)=\frac{1}{2}\left\|u(f)-\omega\right\|_{L^2(Q)}^2+\frac{\gamma}{2}\left\|f-f^*\right\|_{L^2(Q)}^2,
-\end{align}
-where $\gamma>0$ being a regularization parameter, $f^*$ is an a prior estimation of $f$.
-We will prove that $J_\gamma$ is Frechet differentiable and drive a formula for its gradient.
-\begin{dl}
-	The functional $J_\gamma$ is Frechet differentiable and its gradient $\nabla J_\gamma$ at $f$ has the form 
-	\begin{align}\label{2.7}
-		\nabla J_\gamma(f)=q(x, t)p(x, t)+\gamma \left(f(x, t)-f^*(x, t)\right),
-	\end{align}
-	where $p$(x, t) is the solution of the adjoint problem
-	\begin{align}\label{2.8} 
-		\begin{cases}
-		-\frac{\partial p(x, t)}{\partial t}+\mathcal{L}p(x, t)=u(f)-\omega, & (x, t)\in Q,\\
-		u(x, t)=0, & (x, t)\in S\\
-		p(x, T)=0, & x\in \Omega.
-		\end{cases}
-	\end{align}
-\end{dl}
-\noindent To find $f$ satisfied \eqref{2.6}, we use the conjugate gradient method (CG). Its iteration follows, we assume that at the $k$th iteration, we have $f^k$ and then the next iteration will be
-$$f^{k+1}=f^k+\alpha_kd^k,$$
-with
-\begin{align*}
-	d^k&=\left\{\begin{array}{ll}
-	-\nabla J_\gamma(f^k),& k=0,\\
-	-\nabla J_\gamma(f^k)+\beta_kd^{k-1},& k>0,
-	\end{array}\right.\\\\
-	\beta_k&=\frac{\left\|\nabla J_\gamma (f^k)\right\|^2_{L^2(Q)}}{\left\|\nabla J_\gamma (f^{k-1})\right\|^2_{L^2(Q)}},
-\end{align*}
-and
-$$\alpha_k=\operatorname*{arg\,min}_{\alpha\geq 0}J_\gamma(f^k+\alpha d^k).$$
-To identify $\alpha_k$, we consider two problems
-\begin{bt}\label{bt2.1}
-	Denote the solution of this problem is $u[f]$
-	\begin{align*}
-		\begin{cases}
-			\frac{\partial u(x, t)}{\partial t}+\mathcal{L}u(x, t)=f(x, t)q(x, t),&(x, t)\in Q,\\
-			u(x, t)=0, & (x, t)\in S,\\
-			u(x, 0)=0,&x\in \Omega.
-		\end{cases}
-	\end{align*}
-\end{bt}
-\begin{bt}\label{bt2.2}
-	Denote the solution of this problem is $u(u_0, u_D)$
-	\begin{align*}
-		\begin{cases}
-			\frac{\partial u(x, t)}{\partial t}+\mathcal{L}u(x, t)=g(x, t),&(x, t)\in Q,\\
-			u(x, t)=u_D(x, t), & (x, t)\in S,\\
-			u(x, 0)=u_0(x),&x\in \Omega.
-		\end{cases}
-	\end{align*}
-\end{bt}
-\noindent If do so, the observation operators have the form $u(f)= u[f]+ u(u_0, u_D)=Af+ u(u_0, u_D)$, with $A$ being bounded linear operator from $L^2(Q)$ to $L^2(Q)$. By taking $\frac{\partial J_\gamma(f^k+\alpha d^k)}{\partial \alpha}=0$, we obtain, see \eqref{}
-$$\alpha_k=\frac{\left\|r^k\right\|^2_{L^2(Q)}}{\displaystyle\left\|Ad^k\right\|^2_{L^2(Q)}+\gamma\left\|d^k\right\|^2_{L^2(Q)}}.$$
-Thus, the CG algorithm is set up by following loop:
-
-\noindent \textbf{CG algorithm}
-\begin{itemize}
-	\item[1.] Set $k=0$, initiate $f^0$.
-	\item[2.] For $k=0, 1, 2,...$. Calculate
-	$$r^k=-\nabla J_\gamma(f^k).$$
-	Update\\
-	\begin{align*}
-	d^k&=\left\{\begin{array}{ll}
-	r^k,& k=0,\\
-	r^k+\beta_kd^{k-1},& k>0,
-	\end{array}\right.\\\\
-	\beta_k&=\frac{\left\|r^k\right\|^2_{L^2(Q)}}{\left\|r^{k-1}\right\|^2_{L^2(Q)}}.
-	\end{align*}
-	\item[3.] Calculate
-	$$\alpha_k=\frac{\left\|r^k\right\|^2_{L^2(Q)}}{\displaystyle\left\|Ad^k\right\|^2_{L^2(Q)}+\gamma\left\|d^k\right\|^2_{L^2(Q)}}.$$
-	Update
-	$$f^{k+1}=f^{k}+\alpha_kd^k.$$
-\end{itemize}
-%Note: Each loop, we solve a direct problem and an adjoint problem.
-%\subsection{Finite element discretization}
-We rewrite the Tikhonov functional
-\begin{align}
-	J_\gamma(f=\frac{1}{2}\left\|Af-\hat{\omega}\right\|^2_{L^2(Q)}+\frac{\gamma}{2}\left\|f-f^*\right\|^2_{L^2(Q)}
-\end{align}
-where $\hat{\omega}=\omega- u(u_0, u_D)$.
-\\
-The solution $f^\gamma$ of the minimization problem \eqref{2.6} is characterized by the first-order optimality condition
-\begin{align}\label{2.10}
-	\nabla J_\gamma(f^\gamma)= A^*(Af^\gamma-\hat{\omega})+\gamma(f^\gamma-f^*)=0,
-\end{align}
-with $A^*: L^2(Q)\to L^2(Q)$ is the adjoint operator of $A$ defined by $A^*\left( u(f) - \omega\right) = p$ where $p$ is the solution of the adjoint problem \eqref{2.5}. 
-\\
-We use finite element approximation to approximate $A$ and $A^*$ by Crank-Nicolson method as follows: The discrete version of the optimal control problem \eqref{2.4} will be
-$$J_{\gamma, h}(f)=\frac{1}{2}\left\|A_hf-\hat{\omega}_h\right\|^2_{L^2(Q)}+\frac{\gamma}{2}\left\|f-f^*\right\|^2_{L^2(Q)}\to \min.$$
-Let $f^\gamma_h$ be the solution of this problem is characterized by the variational equation
-\begin{align}\label{3.3}
-\nabla J_{\gamma, h}(f^\gamma_h)= A_h^*(A_hf^\gamma-\hat{\omega}_h)+\gamma(f^\gamma_h-f^*)=0,
-\end{align}
-where $A_h^*$ is the adjoint operator of $A_h$. But it is hardly to find $A^*_h$ from $A_h$ in practice, so we define a proximate $\hat{A}_h^*$ of $A^*$ instead. Therefore, we suppose that $\hat{A}^*_h\phi=p_h$, where $\phi= u(f) - \omega$ and $p_h$ is the approximate solution of adjoint problem \eqref{2.5}. Therefore, the equation above will be
-\begin{align}\label{3.4}
-\nabla J_{\gamma, h}(f^\gamma_h)\simeq\nabla J_{\gamma, h}(\hat{f}^\gamma_h)= \hat{A}_h^*(A_h\hat{f}^\gamma-\hat{\omega}_h)+\gamma(\hat{f}^\gamma_h-f^*)=0,
-\end{align}
-Moreover, the observation will have noise in practice, so instead of $\omega$, we suppose that only get $\omega^{\delta}$ satisfying
-$$\left\| \omega-\omega^\delta\right\|_{L^2(Q)}\leq \delta.$$
-Therefore, instead of getting $\hat{f}^\gamma_h$ that satisfies the equation \eqref{3.5}, we will get $\hat{f}^{\gamma, \delta}_h$ satisfying
-\begin{align}\label{3.5}
-\nabla J_{\gamma, h}\left(\hat{f}^{\gamma, \delta}_h\right)= \hat{A}_h^*(A_h\hat{f}^{\gamma, \delta}_h-\hat{\omega}_h^\delta)+\gamma(\hat{f}^{\gamma, \delta}_h-f^*)=0,
-\end{align}
-with $\hat{\omega}_h^\delta=\omega^\delta- u_h(u_0, u_D)$.
-
-\begin{dl}\label{dl3.3}
-	Let $f^\gamma$ and $\hat{f}^\gamma_h$ are the solution of variational problems \eqref{3.1} and \eqref{3.4}, respectively. Then there hold a error estimate
-	\begin{align}\label{3.11}
-	\left\|f^\gamma-\hat{f}^\gamma_h \right\|_{L^2(Q)}\leq c(h^2+\Delta t^2).
-	\end{align}
-\end{dl}
-
-\begin{cy}\label{cy3.1}
-	Let $f^\gamma$ and $\hat{f}^\gamma_h$ are the solution of variational problems \eqref{3.1} and \eqref{3.5}, respectively. Then there hold a error estimate
-	\begin{align}\label{3.12}
-	\left\|f^\gamma-\hat{f}^{\gamma, \delta}_h \right\|_{L^2(Q)}\leq c(h^2+\Delta t^2+\delta).
-	\end{align}
-\end{cy}
 
 
 % --------------------------------------------------------------------

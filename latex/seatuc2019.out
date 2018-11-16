@@ -1,7 +1,7 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
 \BOOKMARK [1][-]{section.2}{Numerical method}{}% 2
-\BOOKMARK [2][-]{subsection.2.1}{Direct problem}{section.2}% 3
-\BOOKMARK [2][-]{subsection.2.2}{Inverse problem}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.1}{Variational problem}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Finite element method}{section.2}% 4
 \BOOKMARK [1][-]{section.3}{Tests and discussion}{}% 5
 \BOOKMARK [2][-]{subsection.3.1}{Error evaluation with exact solution}{section.3}% 6
 \BOOKMARK [2][-]{subsection.3.2}{A problem of thermal engineering}{section.3}% 7
