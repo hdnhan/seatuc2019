@@ -27,9 +27,8 @@
 % --------------------------------------------------------------------
 \section{Introduction}
 % --------------------------------------------------------------------
+\quad Let $\Omega \subset \mathbb{R}^d,\, d\in \mathbb{N^+}$ be a bounded domain with a boundary $\Gamma$ and endow the cylinder $Q=\Omega\times (0,\, T]$ and lateral surface area $S=\Gamma \times (0,\, T]$ where $T>0$. 
 
-Let $\Omega \subset \mathbb{R}^d,\, d\in \mathbb{N^+}$ be a bounded domain with a boundary $\Gamma$ and endow the cylinder $Q=\Omega\times (0,\, T]$ and lateral surface area $S=\Gamma \times (0,\, T]$ where $T>0$. 
-\\
 Consider the heat equation:
 \begin{align}\label{1.1}
 	\frac{\partial u(x, t)}{\partial t}+\mathcal{L}u(x, t)=F(x, t), \quad(x, t)\in Q,
@@ -56,8 +55,7 @@ The problem is that to determine $u$ when all data $a_{ji},\,a_0,\,u_0,\,u_D$ an
 % --------------------------------------------------------------------
 \subsection{Variational problem}
 % --------------------------------------------------------------------
-
-Find $u(.,t)\in H^1(\Omega)$ such that
+\quad Multiplying \eqref{1.1} by a efficient smooth test function $v$, integrating over $\Omega$ and then applying Green's formula, see \cite{}, leads to the problem: Find $u(.,t)\in H^1(\Omega)$ such that
 \begin{align}\label{2.1}
 	\left\langle \frac{\partial u}{\partial t}, v \right\rangle+a\left(u, v\right)=\left\langle F, v \right\rangle,\; \forall v\in H^1(\Omega),
 \end{align} 
@@ -67,16 +65,16 @@ Find $u(.,t)\in H^1(\Omega)$ such that
 where 
 $$a\left(u, v\right)=\int_{\Omega}\left[\sum_{i, j=1}^{d}a_{ji}\frac{\partial u}{\partial x_i}\frac{\partial v}{\partial x_j}+a_0uv\right]dx,$$
 $$\left\langle \varphi, v \right\rangle=\int_{\Omega}\varphi vdx.$$
+
 \subsection{Finite element method}
-Now we present a fully discrete finite element approximation for the variational problem \eqref{2.1} by the Crank-Nicolson method as follows:
-\\
-For \textit{spatial approximation}, let $\mathcal{T}_h$ be a triangulation of $\Omega$ and define a piecewise linear finite element space $V_h \subset H^1(\Omega)$ by
-$$V_h=\left\{v_h:v_h\in C(\overline{\Omega}), v_h|_K\in P_1(K), \forall K\in \mathcal{T}_h\right\},$$
-where $P_1(K)$ is a continuous piecewise linear polynomial on the element $K$. 
-\\
-For \textit{temporal discretization}, discrete $[0, T]$ uniformly into $M$ steps, $t_n=n\Delta t,\, n=0, 1, \dots, M$ with the time step size $\Delta t = T/M$. We define a function $\varphi(x, t)$ and $\varphi(x, t_n)=\varphi^n(x)$.
-\\
-Find $u^n_h\in V_h$ for $n=1, 2, \dots, M$ such that
+\quad Now we present a fully discrete finite element approximation for the variational problem \eqref{2.1} as follows:
+\begin{itemize}
+	\item For \textit{spatial approximation}, let $\mathcal{T}_h$ be a triangulation of $\Omega$ and define a piecewise linear finite element space $V_h \subset H^1(\Omega)$ by
+	$$V_h=\left\{v_h:v_h\in C(\overline{\Omega}), v_h|_K\in P_1(K), \forall K\in \mathcal{T}_h\right\},$$
+	where $P_1(K)$ is a continuous piecewise linear polynomial on the element $K$.
+	\item For \textit{temporal discretization}, discrete $[0, T]$ uniformly into $M$ steps, $t_n=n\Delta t,\, n=0, 1, \dots, M$ with the time step size $\Delta t = T/M$. We define a function $u(x, t_n)=u^n(x)$.
+\end{itemize}
+Find $u^n_h\in V_h$ for $n=1, 2, \dots, M$ with $\theta \in [0, 1]$ such that
 \begin{align}\label{2.3}
 	&\langle d_tu^n_h, v_h \rangle+a\left(\theta u^n_h+(1-\theta)u^{n-1}_h, v_h\right)\notag\\
 	&\qquad\quad=\left\langle \theta F^n+(1-\theta)F^{n-1}, v_h \right\rangle, \; \forall v_h\in V_h,
@@ -85,17 +83,26 @@ and the initial condition
 \begin{align}\label{2.4}
 	u^0_h=u_0,
 \end{align}
-where $d_tu^n_h=\frac{u^n_h-u^{n-1}_h}{\Delta t}, \; n=1, 2, ..., M.$
-
+where $d_tu^n_h=\frac{u^n_h-u^{n-1}_h}{\Delta t}, \; n=1, 2, ..., M$.
+%We have different methods depending on $\theta$:
+%\begin{itemize}
+%	\item $\theta = 0$
+%	\item $\theta = 1$
+%	\item $\theta = 0.5$
+%\end{itemize}
 The discrete variational problem \eqref{2.3} admits a unique solution $u^n_h\in V_h$, see \eqref{}. Let $u_h(x, t)$ be the linear interpolation of $u_h^n$ with respect to $t$. 
 For $x\in \Omega,\, t\in [t_{n-1}, t_n]$, we have
 \begin{align*}
 	u_h(x, t)=\frac{t-t_{n-1}}{\Delta t}u_h^{n-1}+\frac{t_n-t}{\Delta t}u_h^{n}.
 \end{align*}
 \begin{dl}\label{dl2.1}
-	Let $u(x, t)$ be the solution of variational problem \eqref{2.1} - \eqref{2.2} and $u^n_h\in V_h$ for $n=1, 2, \dots, M$ be the solution for \eqref{2.3}. Then there holds the error estimate, see \eqref{}
+	Let $u(x, t)$ be the solution of variational problem \eqref{2.1} - \eqref{2.2} and $u^n_h\in V_h$ for $n=1, 2, \dots, M$ be the solution for \eqref{2.3} - \eqref{2.4}. Then there holds the error estimate, see \eqref{}
 	\begin{align}\label{2.5}
-		\left\|u_h-u\right\|_{L^2(Q)}=O\left(h^2+\Delta t^2\right),
+		\left\|u_h-u\right\|_{L^2(Q)}=
+		\begin{cases}
+			O\left(h^2+\Delta t\right), &\theta=\{0, 1\},\\
+			O\left(h^2+\Delta t^2\right), &\theta=\{0.5\}.
+		\end{cases}		
 	\end{align}
 	where $h$ is the mesh size.
 \end{dl}
