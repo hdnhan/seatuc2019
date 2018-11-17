@@ -34,6 +34,7 @@ yticklabels({'10^{-4}','10^{-3}','10^{-2}','10^{-1}','10^{0}'})
 box on
 xlabel('\Delta t')
 legend('||q-q_h||_{L^2(Q)}', '||u-u_h||_{L^2(Q)}', '||z-z_h||_{L^2(Q)}', 'O(\Delta t^2)', 'Location', 'northwest');
+%legend boxoff 
 pbaspect([3 4 1])
 saveas(gcf, 'err_t.png');
 
@@ -71,14 +72,15 @@ plot(x_x(1:size(x2,2)), x2, '--');
 
 xticks([-2, -1, 0])
 xticklabels({'10^{-2}','10^{-1}','10^{0}'})
-ylim([-4, 1])
+%ylim([-4, 1])
 %ax = gca;
 %ax.YAxisLocation = 'right';
 yticks([-4, -3, -2, -1, 0, 1])
 yticklabels({'10^{-4}','10^{-3}','10^{-2}','10^{-1}','10^{0}','10^{1}'})
 box on
 xlabel('h')
-legend('||q-q_h||_{L^2(Q)}', '||u-u_h||_{L^2(Q)}', '||z-z_h||_{L^2(Q)}', 'O(h^2)', 'Location', 'northwest');
+legend('||q-q_h||_{L^2(Q)}', '||u-u_h||_{L^2(Q)}', '||z-z_h||_{L^2(Q)}', 'O(h^2)', 'Location', 'southeast');
+%legend boxoff 
 pbaspect([3 4 1])
 saveas(gcf, 'err_x.png');
 
