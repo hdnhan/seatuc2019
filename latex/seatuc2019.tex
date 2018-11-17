@@ -1,11 +1,10 @@
 % 6 pages max
 \documentclass[twocolumn]{article}
-\input{packages_and_definitions}
-
+\input{packages_and_definitions} 
 \title{\bf Numerical simulation of heat transfer problem by Freefem++ software}
-\author{Ta Thi Thanh Mai\thanks{email: abc}\and Ho Duc Nhan\thanks{email: abc}\and Tran Minh Tam\thanks{email: abc}}
+\author{Ta Thi Thanh Mai\thanks{email: tathithanhmai@gmail.com}\and Ho Duc Nhan\thanks{email: hdnhan28@gmail.com}\and Tran Minh Tam\thanks{email: tam.tranminh22@gmail.com}}
 %\thanksmarkseries{arabic}
-\date{\footnotesize\textit{School of Applied Mathematics and Informatics, Hanoi University of Science and Technology, 1 Dai Co Viet street, Hai Ba Trung District, Hanoi, Vietnam}}
+\date{\footnotesize\textit{School of Applied Mathematics and Informatics, Hanoi University of Science and Technology, No.1 Dai Co Viet street, Hai Ba Trung District, Hanoi, Vietnam}}
 \justifying
 % ---------------------------------------------
 \begin{document}
@@ -55,7 +54,7 @@ The problem is that to determine $u$ when all data $a_{ji},\,a_0,\,u_0,\,u_D$ an
 % --------------------------------------------------------------------
 \subsection{Variational problem}
 % --------------------------------------------------------------------
-\quad Multiplying \eqref{1.1} by a efficient smooth test function $v$, integrating over $\Omega$ and then applying Green's formula, see \cite{}, leads to the problem: Find $u(.,t)\in H^1(\Omega)$ such that
+\quad Multiplying \eqref{1.1} by an efficient smooth test function $v$, integrating over $\Omega$ and then applying Green's formula, see \cite{}, leads to the problem: Find $u(.,t)\in H^1(\Omega)$ such that
 \begin{align}\label{2.1}
 	\left\langle \frac{\partial u}{\partial t}, v \right\rangle+a\left(u, v\right)=\left\langle F, v \right\rangle,\; \forall v\in H^1(\Omega),
 \end{align} 
@@ -64,7 +63,7 @@ The problem is that to determine $u$ when all data $a_{ji},\,a_0,\,u_0,\,u_D$ an
 \end{align}
 where 
 $$a\left(u, v\right)=\int_{\Omega}\left[\sum_{i, j=1}^{d}a_{ji}\frac{\partial u}{\partial x_i}\frac{\partial v}{\partial x_j}+a_0uv\right]dx,$$
-$$\left\langle \varphi, v \right\rangle=\int_{\Omega}\varphi vdx.$$
+$$\left\langle F, v \right\rangle=\int_{\Omega}F vdx.$$
 
 \subsection{Finite element method}
 \quad Now we present a fully discrete finite element approximation for the variational problem \eqref{2.1} as follows:
@@ -74,6 +73,7 @@ $$\left\langle \varphi, v \right\rangle=\int_{\Omega}\varphi vdx.$$
 	where $P_1(K)$ is a continuous piecewise linear polynomial on the element $K$.
 	\item For \textit{temporal discretization}, discrete $[0, T]$ uniformly into $M$ steps, $t_n=n\Delta t,\, n=0, 1, \dots, M$ with the time step size $\Delta t = T/M$. We define a function $u(x, t_n)=u^n(x)$.
 \end{itemize}
+
 Find $u^n_h\in V_h$ for $n=1, 2, \dots, M$ with $\theta \in [0, 1]$ such that
 \begin{align}\label{2.3}
 	&\langle d_tu^n_h, v_h \rangle+a\left(\theta u^n_h+(1-\theta)u^{n-1}_h, v_h\right)\notag\\
@@ -84,24 +84,18 @@ and the initial condition
 	u^0_h=u_0,
 \end{align}
 where $d_tu^n_h=\frac{u^n_h-u^{n-1}_h}{\Delta t}, \; n=1, 2, ..., M$.
-%We have different methods depending on $\theta$:
-%\begin{itemize}
-%	\item $\theta = 0$
-%	\item $\theta = 1$
-%	\item $\theta = 0.5$
-%\end{itemize}
-The discrete variational problem \eqref{2.3} admits a unique solution $u^n_h\in V_h$, see \eqref{}. Let $u_h(x, t)$ be the linear interpolation of $u_h^n$ with respect to $t$. 
-For $x\in \Omega,\, t\in [t_{n-1}, t_n]$, we have
+
+The discrete variational problem \eqref{2.3} -\eqref{2.4} admits a unique solution $u^n_h\in V_h$, see \cite{}. Let $u_h(x, t)$ be the linear interpolation of $u_h^n$ with respect to $t$. Therefore, for $x\in \Omega,\, t\in [t_{n-1}, t_n]$, we have
 \begin{align*}
 	u_h(x, t)=\frac{t-t_{n-1}}{\Delta t}u_h^{n-1}+\frac{t_n-t}{\Delta t}u_h^{n}.
 \end{align*}
 \begin{dl}\label{dl2.1}
-	Let $u(x, t)$ be the solution of variational problem \eqref{2.1} - \eqref{2.2} and $u^n_h\in V_h$ for $n=1, 2, \dots, M$ be the solution for \eqref{2.3} - \eqref{2.4}. Then there holds the error estimate, see \eqref{}
+	Let $u(x, t)$ be the solution of variational problem \eqref{2.1} - \eqref{2.2} and $u^n_h\in V_h$ for $n=1, 2, \dots, M$ be the solution for \eqref{2.3} - \eqref{2.4}. Then there holds the error estimate, see \cite{}
 	\begin{align}\label{2.5}
 		\left\|u_h-u\right\|_{L^2(Q)}=
 		\begin{cases}
 			O\left(h^2+\Delta t\right), &\theta=\{0, 1\},\\
-			O\left(h^2+\Delta t^2\right), &\theta=\{0.5\}.
+			O\left(h^2+\Delta t^2\right), &\theta=\{0.5\},
 		\end{cases}		
 	\end{align}
 	where $h$ is the mesh size.
@@ -113,6 +107,7 @@ For $x\in \Omega,\, t\in [t_{n-1}, t_n]$, we have
 \section{Tests and discussion}
 % --------------------------------------------------------------------
 \input{result}
+\input{optimal_control_problem}
 
 
 % --------------------------------------------------------------------

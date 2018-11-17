@@ -1,20 +1,23 @@
 load "msh3"
 load "medit"
 
-int nn = 16;
-int Nt = 8;
+int nn = 64;
+int Nt = nn;
 int Nx = nn, Ny = nn;
 int[int] labels = [1, 1, 1, 1];
 mesh Th = square(Nx, Ny, label = labels);
 fespace Vh(Th, P1);
 
-mesh3 Th3 = cube(Nx, Ny, Nt);
+real T = 0.1, dt = T / Nt;
+mesh3 Th3 = cube(Nx, Ny, Nt, [x, y, T * z]);
 fespace Vh3(Th3, P1);
 Vh3 uu;
-Vh3 ue = exp(z) * sin(pi * x) * sin(pi * y);
-Vh3 fe = (1 + 2 * pi ^ 2) * ue;
+real b = -sqrt(5);
+Vh3 wb = exp(b * pi^2 * z) * sin(pi * x) * sin(pi * y);
+Vh3 ue = -1/(2 + b) * pi^2 * wb(x, y, z);
+Vh3 fe = -pi^4 * wb(x, y, z);
 
-real T = 1, dt = T / Nt;
+
 
 Vh uprev = ue(x, y, 0);
 Vh fprev = fe(x, y, 0);

@@ -44,11 +44,3 @@ $$
 J = \dfrac{1}{|\Omega_a|}\int_{0}^{T} \int_{\Omega_a} u dx 
 $$
 This problem belong to the set of shape optimization problems or more generally is an inverse heat problem. These kinds of problems take part in large amount of engineering applications. An approach is to solve as much acceptable input cases as possible then determine which one is the optimal solution. This way requires numerous computations.
-\subsection{Numerical experiment of inverse heat problem}
-FreeFem++ provide an efficient tool to handle inverse problems for partial differential equations by using the C++ optimization module IPOPT. To be more accurate, the module support multiple languages in solving optimization problems. The application of IPOPT for solving inverse heat problem is shown below.\\
-To use the IPOPT module we have to add command\\
-load "ipopt"\\
-We need to find the expression of objective function $J$ and its gradient $\nabla J$ respective with the input control function $f$. The optimal $f$ is achieved via IPOPT loop using a conjugate gradient method solver such as Newton-Raphson method.\\
-J and gradJ\\
-This is an illustrating of the expected control $f$ and its approximation using IPOPT. 
-

@@ -5,5 +5,7 @@
 \BOOKMARK [1][-]{section.3}{Tests and discussion}{}% 5
 \BOOKMARK [2][-]{subsection.3.1}{Error evaluation with exact solution}{section.3}% 6
 \BOOKMARK [2][-]{subsection.3.2}{A problem of thermal engineering}{section.3}% 7
-\BOOKMARK [2][-]{subsection.3.3}{Numerical experiment of inverse heat problem}{section.3}% 8
-\BOOKMARK [1][-]{section.4}{Conclusion}{}% 9
+\BOOKMARK [2][-]{subsection.3.3}{Numerical experiment of optimal control problem}{section.3}% 8
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Optimal control problem}{subsection.3.3}% 9
+\BOOKMARK [3][-]{subsubsection.3.3.2}{Numerical results}{subsection.3.3}% 10
+\BOOKMARK [1][-]{section.4}{Conclusion}{}% 11

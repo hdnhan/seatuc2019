@@ -3,7 +3,7 @@ load "msh3"
 load "medit"
 
 
-int Nt = 2;
+int Nt = 4096;
 int Nx = 32, Ny = Nx;
 real T = 0.1;
 real hx = 1.0/Nx, hy = 1.0/Ny, ht = T/Nt;

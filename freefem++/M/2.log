@@ -1,0 +1,2051 @@
+-- FreeFem++ v  3.610001 (date jeu. 12 juil. 2018 15:05:23)
+ Load: lg_fem lg_mesh lg_mesh3 eigenvalue
+    1 : load "ff-IpOpt"(load: loadLibary C:\Program Files (x86)\FreeFem++\\.\ff-IpOpt = 0)
+    2 : load "msh3"(load: loadLibary C:\Program Files (x86)\FreeFem++\\.\msh3 = 0)
+    3 : load "medit"(load: loadLibary C:\Program Files (x86)\FreeFem++\\.\medit = 0)
+    4 :
+    5 :
+    6 : int Nt = 2;
+    7 : int Nx = 32, Ny = Nx;
+    8 : real T = 0.1;
+    9 : real hx = 1.0/Nx, hy = 1.0/Ny, ht = T/Nt;
+   10 : real b = -sqrt(5);
+   11 :
+   12 : mesh Th2 = square(Nx, Ny);
+   13 : fespace Vh2(Th2, P1);
+   14 :
+   15 : mesh3 Th3 = cube(Nx, Ny, Nt, [x, y, T * z]);
+   16 : fespace Vh3(Th3, P1);
+   17 :
+   18 : macro grad(u) [dx(u), dy(u)] )   [dx(u), dy(u)]//
+   19 :
+   20 : // Data
+   21 : Vh3 wb = exp(b * pi^2 * z) * sin(pi * x) * sin(pi * y);
+   22 : Vh3 f = -pi^4 * wb(x, y, T);
+   23 : Vh3 uhat = (b^2 - 5)/(2 + b) * pi^2 * wb(x, y, z) + 2 * pi^2 * wb(x, y, T);
+   24 :
+   25 : Vh3 qbar = -pi^4 * (wb(x, y, z) - wb(x, y, T));
+   26 : Vh3 ubar = -1/(2 + b) * pi^2 * wb(x, y, z);
+   27 : Vh3 zbar = wb(x, y, z) - wb(x, y, T);
+   28 :
+   29 : real gamma = pi^(-4);
+   30 :
+   31 : Vh2 u0 = ubar(x, y, 0);
+   32 :
+   33 : // State equation:
+   34 : func real[int] StateProblem(real[int] q){
+   35 :         Vh3 u3, q3; q3[] = q;
+   36 :         Vh3 rhs = q3 + f;
+   37 :     Vh2 u, v, Fprev, Fnext;
+   38 :     Vh2 uprev = u0;
+   39 :
+   40 :     for(int ny = 0; ny <= Ny; ny++){
+   41 :                 for(int nx = 0; nx <= Nx; nx++){
+   42 :                         Fprev[][ny * (Nx + 1) + nx] = rhs[][ny * (Nx + 1) + nx];
+   43 :                         u3[][ny * (Nx + 1) + nx] = uprev[][ny * (Nx + 1) + nx];
+   44 :                 }
+   45 :         }
+   46 :
+   47 :     for(int nt = 1; nt <= Nt; nt++){
+   48 :
+   49 :                 for(int ny = 0; ny <= Ny; ny++){
+   50 :                         for(int nx = 0; nx <= Nx; nx++){
+   51 :                                 Fnext[][ny * (Nx + 1) + nx] = rhs[][nt * (Nx + 1) * (Ny + 1) + ny * (Nx + 1) + nx];
+   52 :                         }
+   53 :                 }
+   54 :
+   55 :                 solve CrankNicolson(u, v, solver = CG) =
+   56 :                           int2d(Th2)(u * v / ht + 0.5 * grad(u)   [dx(u), dy(u)]' * grad(v)   [dx(v), dy(v)])
+   57 :                         + int2d(Th2)(-uprev * v / ht + 0.5 * grad(uprev)   [dx(uprev), dy(uprev)]' * grad(v)   [dx(v), dy(v)])
+   58 :                         - int2d(Th2)(0.5 * (Fprev + Fnext) * v)
+   59 :                         + on(1, 2, 3, 4, u = 0);
+   60 :
+   61 :                 for(int ny = 0; ny <= Ny; ny++){
+   62 :                         for(int nx = 0; nx <= Nx; nx++){
+   63 :                                 u3[][nt * (Nx + 1) * (Ny + 1) + ny * (Nx + 1) + nx] = u[][ny * (Nx + 1) + nx];
+   64 :                         }
+   65 :                 }
+   66 :
+   67 :                 Fprev = Fnext;
+   68 :                 uprev = u;
+   69 :         }
+   70 :
+   71 :         return u3[];
+   72 : }
+   73 :
+   74 :
+   75 :
+   76 : // Adjoint equation
+   77 : func real[int] AdjointProblem(real[int] u){
+   78 :
+   79 :     Vh3 z3;
+   80 :     Vh3 rhs; rhs[] = u - uhat[];
+   81 :
+   82 :     Vh2 z,
+ *** Warning  The identifier z hide a Global identifier
+ v, Fprev, Fnext;
+   83 :     Vh2 zprev = 0;
+   84 :
+   85 :     for(int ny = 0; ny <= Ny; ny++){
+   86 :                 for(int nx = 0; nx <= Nx; nx++){
+   87 :                         Fprev[][ny * (Nx + 1) + nx] = rhs[][Nt * (Nx + 1) * (Ny + 1) + ny * (Nx + 1) + nx];
+   88 :                         z3[][Nt * (Nx + 1) * (Ny + 1) + ny * (Nx + 1) + nx] = zprev[][ny * (Nx + 1) + nx];
+   89 :                 }
+   90 :         }
+   91 :
+   92 :     for(int nt = 1; nt <= Nt; nt++){
+   93 :
+   94 :                 for(int ny = 0; ny <= Ny; ny++){
+   95 :                         for(int nx = 0; nx <= Nx; nx++){
+   96 :                                 Fnext[][ny * (Nx + 1) + nx] = rhs[][(Nt - nt) * (Nx + 1) * (Ny + 1) + ny * (Nx + 1) + nx];
+   97 :                         }
+   98 :                 }
+   99 :
+  100 :                 solve CrankNicolson(z, v, solver = CG)
+ *** Warning  The identifier z hide a Global identifier
+ =
+  101 :                           int2d(Th2)(z * v / ht + 0.5 * grad(z)   [dx(z), dy(z)]' * grad(v)   [dx(v), dy(v)])
+  102 :                         + int2d(Th2)(-zprev * v / ht + 0.5 * grad(zprev)   [dx(zprev), dy(zprev)]' * grad(v)   [dx(v), dy(v)])
+  103 :                         - int2d(Th2)(0.5 * (Fprev + Fnext) * v)
+  104 :                         + on(1, 2, 3, 4, z = 0);
+  105 :
+  106 :                 for(int ny = 0; ny <= Ny; ny++){
+  107 :                         for(int nx = 0; nx <= Nx; nx++){
+  108 :                                 z3[][(Nt - nt) * (Nx + 1) * (Ny + 1) + ny * (Nx + 1) + nx] = z[][ny * (Nx + 1) + nx];
+  109 :                         }
+  110 :                 }
+  111 :
+  112 :                 Fprev = Fnext;
+  113 :                 zprev = z;
+  114 :         }
+  115 :
+  116 :         return z3[];
+  117 : }
+  118 :
+  119 :
+  120 : // Tikhonov functional
+  121 : func real J(real[int] q) {
+  122 :     Vh3 q3; q3[] = q;
+  123 :     Vh3 u; u[] = StateProblem(q);
+  124 :     Vh3 del; del[] = u[] - uhat[];
+  125 :     return 0.5 * int3d(Th3)(del * del) + 0.5 * gamma * int3d(Th3)(q3 * q3);
+  126 : }
+  127 :
+  128 :
+  129 : // Gradient of Tikhonov funtional
+  130 : func real[int] GradJ(real[int] q) {
+  131 :     Vh3 z;
+ *** Warning  The identifier z hide a Global identifier
+ z[] = AdjointProblem(StateProblem(q));
+  132 :     real[int] res = z[] + gamma * q;
+  133 :     return res;
+  134 : }
+  135 :
+  136 :
+  137 :
+  138 : Vh3 qh = 0;
+  139 : //IPOPT(J, GradJ, qh[], tol = 1e-6);
+  140 : IPOPT(J, GradJ, qh[]);
+  141 :
+  142 : Vh3 uh; uh[] = StateProblem(qh[]);
+  143 : Vh3 zh; zh[] = AdjointProblem(uh[]);
+  144 :
+  145 : cout << "q: " << sqrt(int3d(Th3)((qh - qbar) * (qh - qbar))) << endl;
+  146 : cout << "u: " << sqrt(int3d(Th3)((uh - ubar) * (uh - ubar))) << endl;
+  147 : cout << "z: " << sqrt(int3d(Th3)((zh - zbar) * (zh - zbar))) << endl;
+  148 :
+  149 :
+  150 :
+  151 : /*
+  152 : //Vh3 uap; uap[] = StateProblem(qbar[]);
+  153 : //Vh3 del = uap - ubar;
+  154 :
+  155 : Vh3 zap; zap[] = AdjointProblem(ubar[]);
+  156 : Vh3 del = zap - zbar;
+  157 :
+  158 : //Vh3 del; del[] = AdjointProblem(haha[]) - ue[]; //uap - ue;
+  159 : cout << "del min and max: " << del[].min << ", " << del[].max << endl;
+  160 : cout << "erorr L2: " << sqrt(int3d(Th3)(del * del)) << endl;
+  161 : */ sizestack + 1024 =10840  ( 9816 )
+ 
+  -- Square mesh : nb vertices  =1089 ,  nb triangles = 2048 ,  nb boundary edges 128
+  Enter: BuildCube: 6
+    kind = 6 n tet Cube = 6 / n slip 6 70
+  Cube  nv=3267 nt=12288 nbe=4608
+  Out:  BuildCube
+  -- FESpace: Nb of Nodes 3267 Nb of DoF 3267
+ 
+IPOPT Note : No hessian given ==> LBFGS hessian approximation enabled
+ 
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+******************************************************************************
+ 
+This is Ipopt version 3.12.4, running with linear solver mumps.
+NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
+ 
+Number of nonzeros in equality constraint Jacobian...:        0
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+ 
+  -- Solve :
+          min -2.18521e-034  max 13.7763
+  -- Solve :
+          min -6.61038e-035  max 4.29905
+  -- Solve :
+          min -3.61252e-036  max 0.229669
+  -- Solve :
+          min -1.46629e-035  max 0.9347
+Total number of variables............................:     3267
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:        0
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:        0
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+ 
+  -- Solve :
+          min -2.18521e-034  max 13.7763
+  -- Solve :
+          min -6.61038e-035  max 4.29905
+  -- Solve :
+          min -3.61252e-036  max 0.229669
+  -- Solve :
+          min -1.46629e-035  max 0.9347
+  -- Solve :
+          min -2.18521e-034  max 13.7763
+  -- Solve :
+          min -6.61038e-035  max 4.29905
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0 4.8390213e+000 0.00e+000 9.35e-001   0.0 0.00e+000    -  0.00e+000 0.00e+000   0
+  -- Solve :
+          min -2.18215e-034  max 13.7568
+  -- Solve :
+          min -6.59397e-035  max 4.28863
+  -- Solve :
+          min -2.18215e-034  max 13.7568
+  -- Solve :
+          min -6.59397e-035  max 4.28863
+  -- Solve :
+          min -3.60466e-036  max 0.229169
+  -- Solve :
+          min -1.46551e-035  max 0.934206
+   1 4.8351409e+000 0.00e+000 9.25e-001 -11.0 9.35e-001    -  1.00e+000 1.00e+000f  1
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+   2 4.7141166e+000 0.00e+000 5.29e-004 -11.0 8.57e+001    -  1.00e+000 1.00e+000f  1
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20227e-035  max 3.4044
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20227e-035  max 3.4044
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20227e-035  max 3.4044
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20227e-035  max 3.4044
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20227e-035  max 3.4044
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20166e-035  max 3.40402
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20136e-035  max 3.40382
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20121e-035  max 3.40372
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20113e-035  max 3.40368
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20109e-035  max 3.40365
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20108e-035  max 3.40364
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20107e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+   3 4.7141166e+000 0.00e+000 5.29e-004 -11.0 5.09e-002    -  1.00e+000 1.16e-010f 34
+  -- Solve :
+          min -1.90989e-034  max 12.0235
+  -- Solve :
+          min -5.20595e-035  max 3.40441
+  -- Solve :
+          min -1.90989e-034  max 12.0235
+  -- Solve :
+          min -5.20595e-035  max 3.40441
+  -- Solve :
+          min -1.90989e-034  max 12.0235
+  -- Solve :
+          min -5.20595e-035  max 3.40441
+  -- Solve :
+          min -1.90989e-034  max 12.0235
+  -- Solve :
+          min -5.20595e-035  max 3.40441
+  -- Solve :
+          min -1.90989e-034  max 12.0235
+  -- Solve :
+          min -5.20595e-035  max 3.40441
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20459e-035  max 3.40402
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20345e-035  max 3.40382
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20239e-035  max 3.40373
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20158e-035  max 3.40368
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20123e-035  max 3.40365
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20111e-035  max 3.40364
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20107e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+   4 4.7141166e+000 0.00e+000 5.29e-004 -11.0 5.12e-002    -  1.00e+000 1.16e-010f 34
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20327e-035  max 3.40442
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20327e-035  max 3.40442
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20327e-035  max 3.40442
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20327e-035  max 3.40442
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20327e-035  max 3.40442
+  -- Solve :
+          min -1.90974e-034  max 12.0236
+  -- Solve :
+          min -5.20299e-035  max 3.40403
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20433e-035  max 3.40383
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.2033e-035  max 3.40373
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20222e-035  max 3.40368
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20149e-035  max 3.40365
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.2012e-035  max 3.40364
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.2011e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20107e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+   5 4.7141166e+000 0.00e+000 5.29e-004 -11.0 5.20e-002    -  1.00e+000 1.16e-010f 34
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20328e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20328e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20328e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20328e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20328e-035  max 3.40441
+  -- Solve :
+          min -1.90989e-034  max 12.0236
+  -- Solve :
+          min -5.20491e-035  max 3.40402
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20394e-035  max 3.40382
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20269e-035  max 3.40373
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20197e-035  max 3.40368
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20139e-035  max 3.40365
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20115e-035  max 3.40364
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20108e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+   6 4.7141166e+000 0.00e+000 5.29e-004 -11.0 5.21e-002    -  1.00e+000 1.16e-010f 34
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20304e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20304e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20304e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20304e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20304e-035  max 3.40441
+  -- Solve :
+          min -1.9099e-034  max 12.0236
+  -- Solve :
+          min -5.20527e-035  max 3.40402
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20435e-035  max 3.40382
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20353e-035  max 3.40373
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20269e-035  max 3.40368
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20181e-035  max 3.40365
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.2013e-035  max 3.40364
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20113e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20108e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+   7 4.7141166e+000 0.00e+000 5.29e-004 -11.0 5.18e-002    -  1.00e+000 1.16e-010f 34
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20319e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20319e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20319e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20319e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20319e-035  max 3.40441
+  -- Solve :
+          min -1.9099e-034  max 12.0236
+  -- Solve :
+          min -5.20513e-035  max 3.40402
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20433e-035  max 3.40382
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20311e-035  max 3.40373
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20206e-035  max 3.40368
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20148e-035  max 3.40365
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20117e-035  max 3.40364
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20108e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+   8 4.7141166e+000 0.00e+000 5.29e-004 -11.0 5.21e-002    -  1.00e+000 1.16e-010f 34
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20318e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20318e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20318e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20318e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20318e-035  max 3.40441
+  -- Solve :
+          min -1.90989e-034  max 12.0236
+  -- Solve :
+          min -5.20456e-035  max 3.40402
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.2034e-035  max 3.40382
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20313e-035  max 3.40373
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20221e-035  max 3.40368
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20148e-035  max 3.40365
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20118e-035  max 3.40364
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20109e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20107e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+   9 4.7141166e+000 0.00e+000 5.29e-004 -11.0 5.18e-002    -  1.00e+000 1.16e-010f 34
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20209e-035  max 3.40442
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20209e-035  max 3.40442
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20209e-035  max 3.40442
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20209e-035  max 3.40442
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20209e-035  max 3.40442
+  -- Solve :
+          min -1.90974e-034  max 12.0236
+  -- Solve :
+          min -5.20187e-035  max 3.40402
+  -- Solve :
+          min -1.90975e-034  max 12.0236
+  -- Solve :
+          min -5.20199e-035  max 3.40383
+  -- Solve :
+          min -1.90989e-034  max 12.0236
+  -- Solve :
+          min -5.20306e-035  max 3.40373
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20222e-035  max 3.40368
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20155e-035  max 3.40365
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20123e-035  max 3.40364
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20112e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20108e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20107e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10 4.7141166e+000 0.00e+000 5.29e-004 -11.0 5.21e-002    -  1.00e+000 1.16e-010f 34
+  -- Solve :
+          min -1.90988e-034  max 12.0235
+  -- Solve :
+          min -5.20578e-035  max 3.40442
+  -- Solve :
+          min -1.90988e-034  max 12.0235
+  -- Solve :
+          min -5.20578e-035  max 3.40442
+  -- Solve :
+          min -1.90988e-034  max 12.0235
+  -- Solve :
+          min -5.20578e-035  max 3.40442
+  -- Solve :
+          min -1.90988e-034  max 12.0235
+  -- Solve :
+          min -5.20578e-035  max 3.40442
+  -- Solve :
+          min -1.90988e-034  max 12.0235
+  -- Solve :
+          min -5.20578e-035  max 3.40442
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20449e-035  max 3.40402
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20327e-035  max 3.40383
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20214e-035  max 3.40373
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20146e-035  max 3.40368
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20119e-035  max 3.40365
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.2011e-035  max 3.40364
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20108e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+  11 4.7141166e+000 0.00e+000 5.29e-004 -11.0 5.26e-002    -  1.00e+000 1.16e-010f 34
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20305e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20305e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20305e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20305e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20305e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0236
+  -- Solve :
+          min -5.20282e-035  max 3.40402
+  -- Solve :
+          min -1.90989e-034  max 12.0236
+  -- Solve :
+          min -5.20434e-035  max 3.40382
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20336e-035  max 3.40373
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.2012e-035  max 3.40368
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20164e-035  max 3.40365
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20123e-035  max 3.40364
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.2011e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -2.91657e-036  max 0.185376
+  -- Solve :
+          min -1.39701e-035  max 0.890409
+  12 4.7141166e+000 0.00e+000 5.29e-004 -11.0 5.12e-002    -  1.00e+000 1.16e-010f 34
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20336e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20336e-035  max 3.40441
+  -- Solve :
+          min -2.91676e-036  max 0.185388
+  -- Solve :
+          min -1.39702e-035  max 0.890412
+  13 4.7141751e+000 0.00e+000 1.02e-005 -11.0 5.19e-002    -  1.00e+000 1.00e+000w  1
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20236e-035  max 3.40441
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20236e-035  max 3.40441
+  -- Solve :
+          min -2.91676e-036  max 0.185388
+  -- Solve :
+          min -1.39702e-035  max 0.890413
+  14 4.7141749e+000 0.00e+000 2.13e-007 -11.0 9.87e-004    -  1.00e+000 1.00e+000w  1
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20229e-035  max 3.40441
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20229e-035  max 3.40441
+  -- Solve :
+          min -2.91676e-036  max 0.185388
+  -- Solve :
+          min -1.39702e-035  max 0.890413
+  15 4.7141749e+000 0.00e+000 1.00e-008 -11.0 2.03e-005    -  1.00e+000 1.00e+000w  1
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20229e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0236
+  -- Solve :
+          min -5.20308e-035  max 3.40402
+  -- Solve :
+          min -1.90988e-034  max 12.0236
+  -- Solve :
+          min -5.20474e-035  max 3.40382
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20227e-035  max 3.40373
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20264e-035  max 3.40368
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20179e-035  max 3.40365
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20129e-035  max 3.40364
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20112e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20107e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90987e-034  max 12.0236
+  -- Solve :
+          min -5.20106e-035  max 3.40363
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20336e-035  max 3.40441
+  -- Solve :
+          min -1.90974e-034  max 12.0235
+  -- Solve :
+          min -5.20336e-035  max 3.40441
+  -- Solve :
+          min -2.91676e-036  max 0.185388
+  -- Solve :
+          min -1.39702e-035  max 0.890412
+  16 4.7141751e+000 0.00e+000 1.02e-005 -11.0 9.53e-007    -  1.00e+000 1.00e+000S 21
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20229e-035  max 3.40441
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20229e-035  max 3.40441
+  -- Solve :
+          min -2.91676e-036  max 0.185388
+  -- Solve :
+          min -1.39702e-035  max 0.890413
+  17 4.7141749e+000 0.00e+000 3.28e-011 -11.0 9.77e-004    -  1.00e+000 1.00e+000f  1
+ 
+Number of Iterations....: 17
+ 
+                                   (scaled)                 (unscaled)
+Objective...............:  4.7141748683290929e+000   4.7141748683290929e+000
+Dual infeasibility......:  3.2784858161605257e-011   3.2784858161605257e-011
+Constraint violation....:  0.0000000000000000e+000   0.0000000000000000e+000
+Complementarity.........:  0.0000000000000000e+000   0.0000000000000000e+000
+Overall NLP error.......:  3.2784858161605257e-011   3.2784858161605257e-011
+ 
+ 
+Number of objective function evaluations             = 409
+Number of objective gradient evaluations             = 18
+Number of equality constraint evaluations            = 0
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 0
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 0
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.799
+Total CPU secs in NLP function evaluations           =     31.652
+ 
+EXIT: Optimal Solution Found.
+ 
+ 
+*** Ipopt succeeded
+  -- Solve :
+          min -1.90987e-034  max 12.0235
+  -- Solve :
+          min -5.20229e-035  max 3.40441
+  -- Solve :
+          min -2.91676e-036  max 0.185388
+  -- Solve :
+          min -1.39702e-035  max 0.890413
+q: 0.321369
+u: 0.208343
+z: 0.00329917
+times: compile 1.025s, execution 32.732s,  mpirank:0
+ ######## We forget of deleting   20450 Nb pointer,   0Bytes  ,  mpirank 0, memory leak =0
+ CodeAlloc : nb ptr  3952,  size :426744 mpirank: 0
+Ok: Normal End
+ try getConsole D:\Study\HUST\FEM\Co Mai\seatuc2019\freefem++\M\2.edp
