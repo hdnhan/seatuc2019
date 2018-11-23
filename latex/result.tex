@@ -1,36 +1,36 @@
 \subsection{Error evaluation with exact solution}
 We study a numerical experiment with the exact solution of heat equation and evaluate the error convergence. Consider a square $[0,1]\times[0,1]$. Find $u(x,y,t)$ satisfy
 \begin{equation}
-\dfrac{\partial u}{\partial t} - \left(\dfrac{\partial^2 u}{\partial x^2} + \dfrac{\partial^2u}{\partial y^2}\right) = (1+2t)\sin(\pi x) \sin(\pi y)
+\dfrac{\partial u}{\partial t} - \left(\dfrac{\partial^2 u}{\partial x^2} + \dfrac{\partial^2u}{\partial y^2}\right) = (1+2\pi^2)\sin(\pi x) \sin(\pi y)\exp(t),
 \end{equation}
 with the initial and boundary conditions
 $$
-u(x,y,0) = 0 \quad \text{and} \quad u|_\Gamma = 0.
+u(x,y,0) = \sin(\pi x)\sin(\pi y)\exp(t) \quad \text{and} \quad u|_\Gamma = 0.
 $$
 The exact solution is
 $$
-u = \sin(\pi x) \sin(\pi y) t,
+u = \sin(\pi x) \sin(\pi y) \exp(t),
 $$
 The approximate solution at final time is illustrated below.
 \begin{figure}[ht]
 	\centering
-	\includegraphics[width=4cm]{dirac}
+	\includegraphics[width=4cm]{figures/direct}
 \end{figure}
-Different cases of mesh size and time step length were studied to show the dependent of error on the mesh smoothness. We also use two different schemes
-\begin{itemize}
-	\item Backward Euler scheme
-	\begin{figure}[ht]
-		\centering
-		\includegraphics[width=4cm]{BE} \quad
-		\includegraphics[width=4cm]{BEt}
-	\end{figure}
-	\item Crank-Nicolson scheme
-	\begin{figure}[ht]
-		\centering
-		\includegraphics[width=4cm]{CN} \quad
-		\includegraphics[width=4cm]{CNt}
-	\end{figure}
-\end{itemize}
+Different cases of mesh size and time step length were studied to show the dependent of error on the mesh smoothness.
+\begin{figure}[http]
+	\centering
+	\begin{tabular}{c}
+		\includegraphics[width=5.5cm]{figures/BE} \\ \includegraphics[width=6cm]{figures/CN}
+	\end{tabular}
+	\caption{$L^2$ error convergence of Backward Euler and Crank-Nicolson scheme dependent from mesh size.}
+\end{figure}
+\begin{figure}[http]
+	\centering
+	\begin{tabular}{c}
+		\includegraphics[width=6cm]{figures/BEt} \\ \includegraphics[width=6cm]{figures/CNt}
+	\end{tabular}
+	\caption{$L^2$ error convergence of Backward Euler and Crank-Nicolson scheme dependent from time step.}
+\end{figure}
 
 \subsection{A problem of thermal engineering}
 We apply the numerical simulations of heat transfer into designing heat sink. Assuming a hot CPU inside a rectangular room fill with air. Let $u=u_{hot}$ inside CPU region and $u=u_{air}$ on air region, respectively $\Omega_{c}$ and $\Omega_{a}$, on the initial time. Our goal is to design a heat sink stick on the CPU to lower its temperature. \\
@@ -46,27 +46,35 @@ We apply the numerical simulations of heat transfer into designing heat sink. As
 %		\draw (1,1) -- (1,0);
 %	\end{tikzpicture}
 %\end{figure}
-The heat sink region, let say $\Omega_{s}$, has thermal conductivity coefficient $\kappa_s$. Similarly let $\kappa_a$ and $\kappa_c$ are respectively the thermal conductivity coefficients inside air and CPU region. Technically, $\kappa_a$ is small compare to $\kappa_c$ and $\kappa_s$ due to nature conduction of air. Furthermore, to provide cooling ability, $\kappa_s>\kappa_c$. Our heat transfer simulations of different heat sink shapes are shown below. The visualization using medit software.\\
-\begin{figure}[ht]
+The heat sink region, let say $\Omega_{s}$, has thermal conductivity coefficient $\kappa_s$. Similarly let $\kappa_a$ and $\kappa_c$ are respectively the thermal conductivity coefficients inside air and CPU region. Technically, $\kappa_a$ is small compare to $\kappa_c$ and $\kappa_s$ due to nature conduction of air. Furthermore, to provide cooling ability, $\kappa_s>\kappa_c$. The visualization using medit software.\\
+\begin{figure}[http]
 	\centering
-	\begin{tabular}{c c}
-		\includegraphics[width=4cm]{nosinkc} & \includegraphics[width=4cm]{nosinkb}
+	\begin{tabular}{c}
+		\includegraphics[width=6cm]{figures/begin}
 	\end{tabular}
-	\caption{Thermal conduction with no heat sink. $u_{min}=58.4$, $u_{max}=59.8$.}
+	\caption{Thermal distribution at initial state. $u|_{\Omega_{c}} = 80$, $u|_{\Omega_{a}\cup\Omega_{s}}=20$.}
 \end{figure}
-\begin{figure}[ht]
+Set $T=5s$, $\kappa_a=0.01$, $\kappa_c=1$, $\kappa_s=100$. The temperature distribution at final time $T$ of different heat sink shapes are shown below.\\
+\begin{figure}[http]
 	\centering
-	\begin{tabular}{c c}
-		\includegraphics[width=4cm]{recsinkc} & \includegraphics[width=4cm]{recsinka}
+	\begin{tabular}{c}
+		\includegraphics[width=6cm]{figures/nosinkc} \\ \includegraphics[width=6cm]{figures/nosinkb}
 	\end{tabular}
-	\caption{Thermal conduction with rectangular shape heat sink. $u_{min}=42.3$, $u_{max}=42.6$.}
+	\caption{Thermal conduction with no heat sink. $u_{min}=63.1$, $u_{max}=67.3$.}
 \end{figure}
-\begin{figure}[ht]
+\begin{figure}[http]
 	\centering
-	\begin{tabular}{c c}
-		\includegraphics[width=4cm]{platec} & \includegraphics[width=4cm]{plateb}
+	\begin{tabular}{c}
+		\includegraphics[width=6cm]{figures/recsinkc} \\ \includegraphics[width=6cm]{figures/recsinkb}
 	\end{tabular}
-	\caption{Thermal conduction with fin shape heat sink. $u_{min}=32.4$, $u_{max}=32.6$.}
+	\caption{Thermal conduction with rectangular shape heat sink. $u_{min}=44.8$, $u_{max}=46.9$.}
+\end{figure}
+\begin{figure}[http]
+	\centering
+	\begin{tabular}{c}
+		\includegraphics[width=6cm]{figures/finsinkc} \\ \includegraphics[width=6cm]{figures/finsinkb}
+	\end{tabular}
+	\caption{Thermal conduction with fin shape heat sink. $u_{min}=34.9$, $u_{max}=40.1$.}
 \end{figure}
 It is obvious that the fin shape heat sink provide better thermal radiator ability compare to a normal rectangular shape, plus requires less material.
 %\subsection{Numerical experiment of an optimal control problem}

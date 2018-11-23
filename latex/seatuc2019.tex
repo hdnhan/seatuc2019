@@ -1,6 +1,7 @@
 % 6 pages max
 \documentclass[twocolumn]{article}
 \input{packages_and_definitions} 
+
 \title{\bf Numerical simulation of heat transfer problem by Freefem++ software}
 \author{Ta Thi Thanh Mai\thanks{email: tathithanhmai@gmail.com}\and Ho Duc Nhan\thanks{email: hdnhan28@gmail.com}\and Tran Minh Tam\thanks{email: tam.tranminh22@gmail.com}}
 %\thanksmarkseries{arabic}
@@ -13,7 +14,7 @@
 	\begin{@twocolumnfalse}
 		\rule{\textwidth}{.1pt}
 		\begin{abstract}
-			content...
+			Heat transfer via conduction in solid objects is an important part in thermal engineering and solid mechanics. Its mathematical expression, the parabolic equation, also received large amount of attention by mathematician whose numerous researches have been studied to solve the equation numerically. For physicist interest, software like Ansys, Solidwork provide sufficient simulation features, but also lack of mathematical clarity for mathematicians. For such purpose, we use Freefem++ software in study of heat transfer which produces both mathematic structures and powerful simulation qualification.
 		\end{abstract}
 		\vspace{1ex}
 		\noindent \textit{Keywords: Inverse source problems, least squares method, Tikhonov regularization, conjugate gradient method.}
@@ -25,6 +26,8 @@
 
 % --------------------------------------------------------------------
 \section{Introduction}
+\input{introduction}
+\section{Setting of problem}
 % --------------------------------------------------------------------
 \quad Let $\Omega \subset \mathbb{R}^d,\, d\in \mathbb{N^+}$ be a bounded domain with a boundary $\Gamma$ and endow the cylinder $Q=\Omega\times (0,\, T]$ and lateral surface area $S=\Gamma \times (0,\, T]$ where $T>0$. 
 
