@@ -1,3 +1,57 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{1}
+
+\bibitem{HTLI14}
+D.N.Hao, P.X.Thanh, D.Lesnic, and M.Ivanchov.
+\newblock Determination of a source in the heat equation from integral
+  observations.
+\newblock {\em Journal of Computational and Applied Mathematics}, 264:82–98,
+  2014.
+
+\bibitem{L98}
+Lawrence~C. Evans.
+\newblock {\em Partial differential equations}.
+\newblock American Mathematical Society, 1998.
+
+\bibitem{H92-2}
+D.N. Hao.
+\newblock A noncharacteristic cauchy problem for linear parabolic equations ii:
+  A variational method.
+\newblock {\em Numer. Funct. Anal. Optim.}, 13:541–564, 1992.
+
+\bibitem{H92-3}
+D.N. Hao.
+\newblock A noncharacteristic cauchy problem for linear parabolic equations
+  iii: A variational method and its approximation schemes.
+\newblock {\em Numer. Funct. Anal. Optim.}, 13:565–583, 1992.
+
+\bibitem{W87}
+Wloka J.
+\newblock {\em Partial Differential Equations}.
+\newblock Cambridge University Press, New York, 1987.
+
+\bibitem{C87}
+Claes Johnson.
+\newblock {\em Numerical Solution of Partial Differential Equations by the
+  Finite Element Method}.
+\newblock Cambridge University Press, New York, 1987.
+
+\bibitem{SV03}
+Stieg Larsson and Vidar Thomee.
+\newblock {\em Partial Differential Equations with Numerical Methods}.
+\newblock Springer Science \& Business Media, 2003.
+
+\bibitem{DB08}
+Dominik Meidner and Boris Vexler.
+\newblock A priori error estimates for space-time finite element discretization
+  of parabolic optimal control problems part i: Problems without control
+  constraints.
+\newblock {\em Society for Industrial and Applied Mathematics},
+  47(3:1150–1177, 2008.
+
+\bibitem{F05}
+Fredi Troltzsch.
+\newblock {\em Optimal Control of Partial Differential Equations: Theory,
+  Methods, and Applications}.
+\newblock American Mathematical Soc, 2005.
 
 \end{thebibliography}

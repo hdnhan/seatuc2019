@@ -1,13 +1,13 @@
 
 \subsection{Numerical experiment of optimal control problem}
-\subsubsection{Optimal control problem}
-\quad In engineering, sometimes we want to know how much heat source provided to receive heat $u(x, t)$ in a physical domain $\Omega$ in a time period $[0, T]$ equals or approximates with $\hat{u}(x, t),\, (x, t)\in Q.$ We suppose that heat source following the form $F(x, t)=f(x, t)+q(x, t)$. This leads to optimize the functional
+%\subsubsection{Optimal control problem}
+\quad In engineering, sometimes we want to know how much heat source provided to receive heat $u(x, t)$ in a physical domain $\Omega$ in a time period $[0, T]$ equals or approximates with $\hat{u}(x, t),\, (x, t)\in Q.$ We suppose that heat source has the form $F(x, t)=f(x, t)+q(x, t)$. This leads to optimize the functional, see \cite{H92-2, H92-3},
 \begin{align}\label{J}
 	J(q)=\frac{1}{2}\left\|u-\hat{u}\right\|_{L^2(Q)}^2+\frac{\gamma}{2}\left\|q\right\|_{L^2(Q)}^2,
 \end{align}
 where $q$ being the control variable and $\gamma>0$ being a regularization parameter.
 
-To solve this problem, we use FreeFem++ software which provides an efficient tool called IPOPT. It is designed to perform optimal control problems, for more details see at \cite{}. To use this optimizer, we need to include the \textit{ff-Ipopt} dynamic library. The parameters including the objective function $J(f)$ and its gradient $\nabla J(f)$ following, see \cite{}
+To solve this problem, we use FreeFem++ software which provides an efficient tool called IPOPT. It is designed to perform optimal control problems, for more details see at \cite{}. To use this optimizer, we need to include the \textit{ff-Ipopt} dynamic library. The parameters including the objective function $J(f)$ and its gradient $\nabla J(f)$ following
 \begin{align}\label{gradJ}
 	\nabla J(q)=z(x, t)+\gamma q(x, t),
 	\end{align}
@@ -20,8 +20,7 @@ To solve this problem, we use FreeFem++ software which provides an efficient too
 	\end{cases}
 \end{align}
 
-\subsubsection{Numerical results}
-\quad In this section, we experiment an example as in \cite{}. We use finite element method with $\theta=0.5$ known for Crank-Nicolson method to solve the direct problem \eqref{1.1} and adjoint problem \eqref{adjoint}. Consider $\Omega=(0, 1)^2$ and $T=0.1$ and homogeneous Dirichlet boundary condition. The right hand side $f$, the desired state $\hat{u}$ and the initial condition $u_0$ such that
+The gradient $\nabla J(f)$ and adjoint problem will be derived the same as \cite{HTLI14}. Now we will experiment the example as in \cite{DB08}. For the error's sake, we will use Crank-Nicolson method ($\theta=0.5$) to solve the direct problem \eqref{1.1} and adjoint problem \eqref{adjoint}. Consider $\Omega=(0, 1)^2$ and $T=0.1$ and homogeneous Dirichlet boundary condition. The right hand side $f$, the desired state $\hat{u}$ and the initial condition $u_0$ such that
 \begin{align*}
 	&f(x, t)=-\pi^4w_b(x, T),\\
 	&\hat{u}(x, t)=\frac{b^2-5}{2+b}\pi^2 w_b(x, t)+2\pi^2w_b(x, T),\\

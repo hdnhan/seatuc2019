@@ -1,5 +1,5 @@
 \subsection{Error evaluation with exact solution}
-We study a numerical experiment with the exact solution of heat equation and evaluate the error convergence. Consider a square $[0,1]\times[0,1]$. Find $u(x,y,t)$ satisfy
+We study a numerical experiment with the exact solution of heat equation and evaluate the error convergence. Consider a square $[0,1]\times[0,1]$. Find $u(x,y,t)$ satisfied
 \begin{equation}
 \dfrac{\partial u}{\partial t} - \left(\dfrac{\partial^2 u}{\partial x^2} + \dfrac{\partial^2u}{\partial y^2}\right) = (1+2\pi^2)\sin(\pi x) \sin(\pi y)\exp(t),
 \end{equation}
@@ -11,25 +11,26 @@ The exact solution is
 $$
 u = \sin(\pi x) \sin(\pi y) \exp(t),
 $$
-The approximate solution at final time is illustrated below.
-\begin{figure}[ht]
-	\centering
-	\includegraphics[width=4cm]{figures/direct}
-\end{figure}
+%\begin{figure}[ht]	
+%	\centering
+%	\includegraphics[width=0.8\linewidth]{figures/direct}
+%	\caption{Exact solution of direct problem.} \label{fig:direct}
+%\end{figure}
+%The approximate solution at final time is illustrated in Figure \ref{fig:direct}.
 Different cases of mesh size and time step length were studied to show the dependent of error on the mesh smoothness.
-\begin{figure}[http]
+\begin{figure}[h!]
 	\centering
 	\begin{tabular}{c}
-		\includegraphics[width=5.5cm]{figures/BE} \\ \includegraphics[width=6cm]{figures/CN}
+		\includegraphics[width=.8\linewidth]{figures/BE} \\ \includegraphics[width=.8\linewidth]{figures/BEt}
 	\end{tabular}
-	\caption{$L^2$ error convergence of Backward Euler and Crank-Nicolson scheme dependent from mesh size.}
+	\caption{$L^2$ error convergence of Backward Euler scheme dependency on mesh size and time step.}
 \end{figure}
-\begin{figure}[http]
+\begin{figure}[h!]
 	\centering
 	\begin{tabular}{c}
-		\includegraphics[width=6cm]{figures/BEt} \\ \includegraphics[width=6cm]{figures/CNt}
+		\includegraphics[width=.8\linewidth]{figures/CN} \\ \includegraphics[width=.8\linewidth]{figures/CNt}
 	\end{tabular}
-	\caption{$L^2$ error convergence of Backward Euler and Crank-Nicolson scheme dependent from time step.}
+	\caption{$L^2$ error convergence of Crank-Nicolson scheme dependency on mesh size and time step.}
 \end{figure}
 
 \subsection{A problem of thermal engineering}
@@ -46,37 +47,36 @@ We apply the numerical simulations of heat transfer into designing heat sink. As
 %		\draw (1,1) -- (1,0);
 %	\end{tikzpicture}
 %\end{figure}
-The heat sink region, let say $\Omega_{s}$, has thermal conductivity coefficient $\kappa_s$. Similarly let $\kappa_a$ and $\kappa_c$ are respectively the thermal conductivity coefficients inside air and CPU region. Technically, $\kappa_a$ is small compare to $\kappa_c$ and $\kappa_s$ due to nature conduction of air. Furthermore, to provide cooling ability, $\kappa_s>\kappa_c$. The visualization using medit software.\\
-\begin{figure}[http]
+The heat sink region, denoted by $\Omega_{s}$, has thermal conductivity coefficient $\kappa_s$. Similarly, let $\kappa_a$ and $\kappa_c$ be respectively the thermal conductivity coefficients inside air and CPU region. Technically, $\kappa_a$ is small compare to $\kappa_c$ and $\kappa_s$ due to nature conduction of air. Furthermore, to provide cooling ability, $\kappa_s>\kappa_c$. The visualization using medit software.\\
+\begin{figure}[h!]
 	\centering
 	\begin{tabular}{c}
-		\includegraphics[width=6cm]{figures/begin}
+		\includegraphics[width=.8\linewidth]{figures/begin}
 	\end{tabular}
 	\caption{Thermal distribution at initial state. $u|_{\Omega_{c}} = 80$, $u|_{\Omega_{a}\cup\Omega_{s}}=20$.}
 \end{figure}
-Set $T=5s$, $\kappa_a=0.01$, $\kappa_c=1$, $\kappa_s=100$. The temperature distribution at final time $T$ of different heat sink shapes are shown below.\\
-\begin{figure}[http]
+Set $T=1s$, $\kappa_a=0.01$, $\kappa_c=1$, $\kappa_s=100$. The temperature distribution at final time $T$ of different heat sink shapes are shown below.\\
+\begin{figure}[h!]
 	\centering
 	\begin{tabular}{c}
-		\includegraphics[width=6cm]{figures/nosinkc} \\ \includegraphics[width=6cm]{figures/nosinkb}
+		\includegraphics[width=.8\linewidth]{figures/nosinkc} \\ \includegraphics[width=.8\linewidth]{figures/nosinkb}
 	\end{tabular}
 	\caption{Thermal conduction with no heat sink. $u_{min}=63.1$, $u_{max}=67.3$.}
 \end{figure}
-\begin{figure}[http]
+\begin{figure}[h!]
 	\centering
 	\begin{tabular}{c}
-		\includegraphics[width=6cm]{figures/recsinkc} \\ \includegraphics[width=6cm]{figures/recsinkb}
+		\includegraphics[width=.8\linewidth]{figures/recsinkc} \\ \includegraphics[width=.8\linewidth]{figures/recsinkb}
 	\end{tabular}
 	\caption{Thermal conduction with rectangular shape heat sink. $u_{min}=44.8$, $u_{max}=46.9$.}
 \end{figure}
-\begin{figure}[http]
+\begin{figure}[h!]
 	\centering
 	\begin{tabular}{c}
-		\includegraphics[width=6cm]{figures/finsinkc} \\ \includegraphics[width=6cm]{figures/finsinkb}
+		\includegraphics[width=.8\linewidth]{figures/finsinkc} \\ \includegraphics[width=.8\linewidth]{figures/finsinkb}
 	\end{tabular}
 	\caption{Thermal conduction with fin shape heat sink. $u_{min}=34.9$, $u_{max}=40.1$.}
 \end{figure}
-It is obvious that the fin shape heat sink provide better thermal radiator ability compare to a normal rectangular shape, plus requires less material.
 %\subsection{Numerical experiment of an optimal control problem}
 %FreeFem++ provide an efficient tool to handle optimal control problem for partial differential equations by using the C++ optimization module IPOPT. To be more accurate, the module support multiple languages in solving optimization problems. The application of IPOPT for solving inverse heat problem is shown below.\\
 %To use the IPOPT module we have to add command
