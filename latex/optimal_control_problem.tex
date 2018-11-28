@@ -1,4 +1,4 @@
-
+\newpage
 \subsection{Numerical experiment of optimal control problem}
 %\subsubsection{Optimal control problem}
 \quad In engineering, sometimes we want to know how much heat source provided to receive heat $u(x, t)$ in a physical domain $\Omega$ in a time period $[0, T]$ equals or approximates with $\hat{u}(x, t),\, (x, t)\in Q.$ We suppose that heat source has the form $F(x, t)=f(x, t)+q(x, t)$. This leads to optimize the functional, see \cite{H92-2, H92-3},
@@ -35,16 +35,18 @@ We chose the regularization parameter $\gamma=\pi^{-4}$ and the optimal solution
 	&\bar{z}(x, t)=w_b(x, t)-w_b(x, T).
 \end{align*}
 
-First, we consider the behavior of the error for a sequence of discretization with decreasing size of the time steps and a fixed spatial triangulation with $N=1089$ nodes. Second, we examine the behavior of the error under refinement of the spatial triangulation for $M=1024$ time steps. We choose the free parameter $b$ to be $-\sqrt{5}$.
+First, we consider the behavior of the error for a sequence of discretization with decreasing size of the time steps and a fixed spatial triangulation with $N=1089$ nodes. Second, we examine the behavior of the error under refinement of the spatial triangulation for $M=1024$ time steps. We choose the free parameter $b$ to be $-\sqrt{5}$. Error convergence of different cases are shown in Figures \ref{fig:opt_t} and \ref{fig:opt_x}.
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\linewidth]{figures/err_t}
 	\caption{Refinement of the time steps for $N =1089$ spatial nodes}
+	\label{fig:opt_t}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\linewidth]{figures/err_x}
 	\caption{Refinement of the spatial triangulation for $M = 1024$ time steps}
+	\label{fig:opt_x}
 \end{figure}

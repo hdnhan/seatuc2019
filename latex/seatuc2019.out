@@ -3,9 +3,8 @@
 \BOOKMARK [1][-]{section.3}{Numerical method}{}% 3
 \BOOKMARK [2][-]{subsection.3.1}{Variational problem}{section.3}% 4
 \BOOKMARK [2][-]{subsection.3.2}{Finite element method}{section.3}% 5
-\BOOKMARK [2][-]{subsection.3.3}{Types of heat source}{section.3}% 6
-\BOOKMARK [1][-]{section.4}{Tests and discussion}{}% 7
-\BOOKMARK [2][-]{subsection.4.1}{Error evaluation with exact solution}{section.4}% 8
-\BOOKMARK [2][-]{subsection.4.2}{A problem of thermal engineering}{section.4}% 9
-\BOOKMARK [2][-]{subsection.4.3}{Numerical experiment of optimal control problem}{section.4}% 10
-\BOOKMARK [1][-]{section.5}{Conclusion}{}% 11
+\BOOKMARK [1][-]{section.4}{Tests and discussion}{}% 6
+\BOOKMARK [2][-]{subsection.4.1}{Error evaluation with exact solution}{section.4}% 7
+\BOOKMARK [2][-]{subsection.4.2}{A problem of thermal engineering}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.3}{Numerical experiment of optimal control problem}{section.4}% 9
+\BOOKMARK [1][-]{section.5}{Conclusion and perspective}{}% 10

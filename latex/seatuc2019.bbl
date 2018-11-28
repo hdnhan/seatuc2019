@@ -1,4 +1,4 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
 \bibitem{HTLI14}
 D.N.Hao, P.X.Thanh, D.Lesnic, and M.Ivanchov.
@@ -11,6 +11,11 @@ D.N.Hao, P.X.Thanh, D.Lesnic, and M.Ivanchov.
 Lawrence~C. Evans.
 \newblock {\em Partial differential equations}.
 \newblock American Mathematical Society, 1998.
+
+\bibitem{Fre01}
+P.~Frey.
+\newblock Medit: An interactive mesh visualization software.
+\newblock Technical Report 0253, INRIA Rocquencourt, December 2001.
 
 \bibitem{H92-2}
 D.N. Hao.
@@ -47,6 +52,12 @@ Dominik Meidner and Boris Vexler.
   constraints.
 \newblock {\em Society for Industrial and Applied Mathematics},
   47(3:1150–1177, 2008.
+
+\bibitem{TLP18}
+T.~T.~M. Ta, V.~C. Le, and H.~T. Pham.
+\newblock Shape optimization for stokes flows using sensitivity analysis and
+  finite element method.
+\newblock {\em Applied Numercical Mathematics}, 126:160 -- 179, 2018.
 
 \bibitem{F05}
 Fredi Troltzsch.
