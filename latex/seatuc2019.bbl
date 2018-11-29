@@ -65,4 +65,14 @@ Fredi Troltzsch.
   Methods, and Applications}.
 \newblock American Mathematical Soc, 2005.
 
+\bibitem{A}
+Andreas Wachter.
+\newblock Short tutorial: Getting started with ipopt in 90 minutes.
+
+\bibitem{AL06}
+Andreas Wachter and Lorenz~T. Biegler.
+\newblock On the implementation of an interior-point filter line-search
+  algorithm for large-scale nonlinear programming.
+\newblock {\em Mathematical Programming}, 106:25--57, 2006.
+
 \end{thebibliography}

@@ -35,7 +35,7 @@ box on
 xlabel('\Delta t')
 legend('||q-q_h||_{L^2(Q)}', '||u-u_h||_{L^2(Q)}', '||z-z_h||_{L^2(Q)}', 'O(\Delta t^2)', 'Location', 'northwest');
 %legend boxoff 
-pbaspect([3 4 1])
+pbaspect([0.85 1 1])
 saveas(gcf, 'err_t.png');
 
 
@@ -81,6 +81,6 @@ box on
 xlabel('h')
 legend('||q-q_h||_{L^2(Q)}', '||u-u_h||_{L^2(Q)}', '||z-z_h||_{L^2(Q)}', 'O(h^2)', 'Location', 'southeast');
 %legend boxoff 
-pbaspect([3 4 1])
+pbaspect([0.85 1 1])
 saveas(gcf, 'err_x.png');
 

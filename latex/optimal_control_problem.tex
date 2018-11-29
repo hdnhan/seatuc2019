@@ -7,7 +7,7 @@
 \end{align}
 where $q$ being the control variable and $\gamma>0$ being a regularization parameter.
 
-To solve this problem, we use FreeFem++ software which provides an efficient tool called IPOPT. It is designed to perform optimal control problems, for more details see at \cite{}. To use this optimizer, we need to include the \textit{ff-Ipopt} dynamic library. The parameters including the objective function $J(f)$ and its gradient $\nabla J(f)$ following
+To solve this problem, we use FreeFem++ software which provides an efficient tool called IPOPT. It is designed to perform optimal control problems, for more details see at \cite{A, AL06}. To use this optimizer, we need to include the \textit{ff-Ipopt} dynamic library. The parameters including the objective function $J(f)$ and its gradient $\nabla J(f)$ following
 \begin{align}\label{gradJ}
 	\nabla J(q)=z(x, t)+\gamma q(x, t),
 	\end{align}
@@ -39,14 +39,14 @@ First, we consider the behavior of the error for a sequence of discretization wi
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\linewidth]{figures/err_t}
+	\includegraphics[width=\linewidth]{../freefem++/err_t}
 	\caption{Refinement of the time steps for $N =1089$ spatial nodes}
 	\label{fig:opt_t}
 \end{figure}
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\linewidth]{figures/err_x}
+	\includegraphics[width=\linewidth]{../freefem++/err_x}
 	\caption{Refinement of the spatial triangulation for $M = 1024$ time steps}
 	\label{fig:opt_x}
 \end{figure}
